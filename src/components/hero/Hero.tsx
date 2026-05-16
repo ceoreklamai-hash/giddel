@@ -7,8 +7,8 @@ export function Hero() {
   return (
     <section className={styles.hero}>
       <Image
-        src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1600&q=85"
-        alt="Краснодарское побережье, горы и море"
+        src="/hero-bg.webp"
+        alt="Краснодарское побережье — бухта с бирюзовой водой"
         fill
         priority
         className={styles.bg}
