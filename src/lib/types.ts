@@ -21,7 +21,7 @@ export interface Activity {
   location_name: string | null
   lat: number | null
   lng: number | null
-  images: string[]
+  images: string[] | null
   partner_id: string | null
   commission_pct: number
   is_active: boolean
@@ -34,7 +34,7 @@ export interface Wine {
   name: string
   region: string
   description: string | null
-  images: string[]
+  images: string[] | null
   tour_types: string[]
   price_from: number | null
   partner_id: string | null

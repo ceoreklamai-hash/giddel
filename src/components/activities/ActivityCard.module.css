@@ -78,7 +78,7 @@
 .price {
   font-size: 16px;
   font-weight: 700;
-  color: #a87fe8;
+  color: var(--color-accent);
   letter-spacing: -0.3px;
 }
 
