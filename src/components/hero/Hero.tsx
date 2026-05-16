@@ -7,7 +7,7 @@ export function Hero() {
   return (
     <section className={styles.hero}>
       <Image
-        src="/hero-bg.webp"
+        src="/hero-bg.png"
         alt="Краснодарское побережье — бухта с бирюзовой водой"
         fill
         priority
