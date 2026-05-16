@@ -19,7 +19,7 @@
   aspect-ratio: 3/4;
   overflow: hidden;
   cursor: pointer;
-  background: #111;
+  background: #100e1c;
 }
 
 .item img {
@@ -45,7 +45,11 @@
   text-transform: uppercase;
   color: #fff;
   z-index: 1;
+  font-weight: 600;
 }
+
+.item:nth-child(odd) .name { color: #c0a0f8; }
+.item:nth-child(even) .name { color: #a0d880; }
 
 @media (max-width: 1024px) {
   .grid { grid-template-columns: repeat(2, 1fr); }

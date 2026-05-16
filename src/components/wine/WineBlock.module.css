@@ -27,13 +27,15 @@
 
 .title {
   font-size: clamp(28px, 3vw, 40px);
-  color: #f0e6d3;
+  color: #f0e8ff;
   margin-bottom: 20px;
   margin-top: 16px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .title em {
-  font-style: italic;
+  font-style: normal;
   color: var(--color-accent);
 }
 
@@ -41,7 +43,7 @@
   font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.85;
-  color: rgba(240, 230, 211, 0.6);
+  color: rgba(240, 232, 255, 0.5);
   margin-bottom: 36px;
 }
 
@@ -57,7 +59,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 0;
-  border-bottom: 1px solid rgba(200, 169, 110, 0.12);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .wineryName {
@@ -70,7 +72,7 @@
   font-family: var(--font-sans);
   font-size: 11px;
   letter-spacing: 1px;
-  color: var(--color-accent);
+  color: var(--color-accent-2);
 }
 
 .cta {

@@ -47,13 +47,15 @@
 }
 
 .title {
-  font-size: clamp(36px, 5vw, 60px);
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 800;
   color: #fff;
   margin-bottom: 28px;
+  letter-spacing: -1px;
 }
 
 .title em {
-  font-style: italic;
+  font-style: normal;
   color: var(--color-accent);
 }
 
@@ -96,28 +98,28 @@
 .chipActive {
   background: var(--color-accent);
   border-color: var(--color-accent);
-  color: #000;
+  color: #fff;
 }
 
 .cta {
   display: inline-block;
   margin-top: 28px;
-  background: var(--color-accent);
-  color: #000;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+  color: #fff;
   font-family: var(--font-sans);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
   padding: 14px 36px;
   border: none;
   border-radius: var(--radius);
   cursor: pointer;
-  transition: background var(--transition);
+  transition: opacity var(--transition);
 }
 
-.cta:hover:not(:disabled) { background: var(--color-accent-hover); }
-.cta:disabled { opacity: 0.5; cursor: not-allowed; }
+.cta:hover:not(:disabled) { opacity: 0.85; }
+.cta:disabled { opacity: 0.4; cursor: not-allowed; }
 
 @media (max-width: 768px) {
   .content { padding: 40px 24px 50px; }
