@@ -31,7 +31,7 @@ export function BookingForm({ activity }: Props) {
   const [error, setError] = useState<string | null>(null)
 
   const totalPrice = activity.price_from * form.guests
-  const commissionAmount = Math.round(totalPrice * activity.commission_pct / 100)
+  const commissionAmount = Math.round(totalPrice * (activity.commission_pct ?? 0) / 100)
 
   function update(field: keyof FormState, value: string | number) {
     setForm(f => ({ ...f, [field]: value }))

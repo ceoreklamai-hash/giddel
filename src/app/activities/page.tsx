@@ -27,7 +27,10 @@ async function getActivities(category: Category | null): Promise<Activity[]> {
   }
 
   const { data, error } = await query
-  if (error) throw error
+  if (error) {
+    console.error('[activities] Supabase error:', error.message)
+    return []
+  }
   return data ?? []
 }
 

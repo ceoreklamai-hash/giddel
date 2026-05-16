@@ -1,4 +1,5 @@
 // src/app/activities/[slug]/page.tsx
+import { cache } from 'react'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Image from 'next/image'
@@ -10,7 +11,7 @@ import { CATEGORY_LABELS } from '@/lib/types'
 import type { Activity } from '@/lib/types'
 import styles from './ActivityDetail.module.css'
 
-async function getActivity(slug: string): Promise<Activity | null> {
+const getActivity = cache(async (slug: string): Promise<Activity | null> => {
   const { data, error } = await supabase
     .from('activities')
     .select('*')
@@ -19,7 +20,7 @@ async function getActivity(slug: string): Promise<Activity | null> {
     .single()
   if (error) return null
   return data
-}
+})
 
 interface PageProps {
   params: Promise<{ slug: string }>
