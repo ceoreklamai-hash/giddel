@@ -19,7 +19,7 @@ export function MapView({ activities }: Props) {
   const zoom = 8
 
   // Берём первую активность с координатами для центрирования
-  const withCoords = activities.filter(a => a.lat && a.lng)
+  const withCoords = activities.filter(a => a.lat != null && a.lng != null)
   const centerActivity = withCoords[0]
   const lat = centerActivity?.lat ?? centerLat
   const lng = centerActivity?.lng ?? centerLng
