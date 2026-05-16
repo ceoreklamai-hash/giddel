@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { CATEGORY_LABELS, type Category } from '@/lib/types'
 import styles from './CategoryTabs.module.css'
 
-const ALL_CATEGORIES: Category[] = ['yacht', 'wine', 'horse', 'quad', 'surf', 'fishing', 'rope', 'excursion']
+const ALL_CATEGORIES = Object.keys(CATEGORY_LABELS) as Category[]
 
 export function CategoryTabs() {
   const router = useRouter()
@@ -25,6 +25,7 @@ export function CategoryTabs() {
   return (
     <div className={styles.wrap}>
       <button
+        type="button"
         className={`${styles.tab} ${!active ? styles.tabActive : ''}`}
         onClick={() => select(null)}
       >
@@ -33,6 +34,7 @@ export function CategoryTabs() {
       {ALL_CATEGORIES.map(cat => (
         <button
           key={cat}
+          type="button"
           className={`${styles.tab} ${active === cat ? styles.tabActive : ''}`}
           onClick={() => select(cat)}
         >
