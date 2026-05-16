@@ -26,7 +26,8 @@ async function getActivities(category: Category | null): Promise<Activity[]> {
     query = query.eq('category', category)
   }
 
-  const { data } = await query
+  const { data, error } = await query
+  if (error) throw error
   return data ?? []
 }
 
@@ -57,22 +58,22 @@ export default async function ActivitiesPage({ searchParams }: PageProps) {
             </h1>
             <span className={styles.count}>{activities.length} результатов</span>
           </div>
-          <Suspense>
+          <Suspense fallback={null}>
             <CategoryTabs />
           </Suspense>
         </div>
 
         <div className={styles.layout}>
           <div>
-            {activities.length === 0 ? (
-              <div className={styles.empty}>Активностей в этой категории пока нет</div>
-            ) : (
-              <div className={styles.grid}>
-                {activities.map(a => (
+            <div className={styles.grid}>
+              {activities.length === 0 ? (
+                <div className={styles.empty}>Активностей в этой категории пока нет</div>
+              ) : (
+                activities.map(a => (
                   <ActivityCard key={a.id} activity={a} />
-                ))}
-              </div>
-            )}
+                ))
+              )}
+            </div>
           </div>
 
           <div className={styles.mapCol}>
