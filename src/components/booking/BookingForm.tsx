@@ -1,24 +1,18 @@
-// src/components/booking/BookingForm.tsx
 'use client'
-
-import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
+// src/components/booking/BookingForm.tsx
+import { useState, useEffect, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import type { Activity } from '@/lib/types'
 import styles from './BookingForm.module.css'
 
 interface Props {
   activity: Activity
+  availableSlots?: string[] // слоты из расписания партнёра
+  takenSlots?: string[]     // уже занятые слоты на выбранную дату
 }
 
-interface FormState {
-  date: string
-  guests: number
-  name: string
-  phone: string
-  email: string
-}
-
-export function BookingForm({ activity }: Props) {
+export function BookingForm({ activity, availableSlots, takenSlots = [] }: Props) {
+  const router = useRouter()
   const [refCode, setRefCode] = useState<string | null>(null)
 
   useEffect(() => {
@@ -26,73 +20,62 @@ export function BookingForm({ activity }: Props) {
     if (match) setRefCode(decodeURIComponent(match[1]))
   }, [])
 
-  const [form, setForm] = useState<FormState>({
-    date: '',
-    guests: 1,
-    name: '',
-    phone: '',
-    email: '',
-  })
+  const today = new Date().toISOString().split('T')[0]
+
+  const [date, setDate] = useState('')
+  const [time, setTime] = useState('')
+  const [guests, setGuests] = useState(1)
+  const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState('')
 
-  const totalPrice = activity.price_from * form.guests
-  const commissionAmount = Math.round(totalPrice * (activity.commission_pct ?? 0) / 100)
+  const total = activity.price_from * guests
 
-  function update(field: keyof FormState, value: string | number) {
-    setForm(f => ({ ...f, [field]: value }))
-    setError(null)
-  }
+  const slots = useMemo(() => {
+    if (!availableSlots || availableSlots.length === 0) return null // не показываем выбор времени
+    return availableSlots.filter(s => !takenSlots.includes(s))
+  }, [availableSlots, takenSlots])
 
-  const isValid =
-    form.date !== '' &&
-    form.guests >= 1 &&
-    form.name.trim().length >= 2 &&
-    form.phone.trim().length >= 10 &&
-    form.email.includes('@')
+  const isValid = date && name.trim().length >= 2 && phone.trim().length >= 10
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!isValid) return
     setLoading(true)
-    setError(null)
+    setError('')
 
-    const { error: supabaseError } = await supabase.from('bookings').insert({
-      activity_id: activity.id,
-      tourist_name: form.name.trim(),
-      tourist_phone: form.phone.trim(),
-      tourist_email: form.email.trim(),
-      booking_date: form.date,
-      guests_count: form.guests,
-      total_price: totalPrice,
-      commission_amount: commissionAmount,
-      status: 'pending',
-      ref_code: refCode ?? null,
+    const res = await fetch('/api/payment/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        activity_id: activity.id,
+        tourist_name: name.trim(),
+        tourist_phone: phone.trim(),
+        tourist_email: email.trim(),
+        booking_date: date,
+        booking_time: time || null,
+        guests_count: guests,
+        ref_code: refCode,
+      }),
     })
 
+    const data = await res.json()
     setLoading(false)
 
-    if (supabaseError) {
-      setError('Ошибка при сохранении. Попробуйте ещё раз.')
+    if (!data.ok) {
+      setError(data.error ?? 'Ошибка. Попробуйте ещё раз.')
       return
     }
 
-    setSuccess(true)
-  }
-
-  if (success) {
-    return (
-      <div className={styles.box}>
-        <div className={styles.success}>
-          <div className={styles.successIcon}>✓</div>
-          <div className={styles.successTitle}>Заявка принята!</div>
-          <p className={styles.successText}>
-            Мы свяжемся с вами по номеру {form.phone} для подтверждения бронирования.
-          </p>
-        </div>
-      </div>
-    )
+    if (data.payment_url) {
+      // Редирект на оплату YooKassa
+      window.location.href = data.payment_url
+    } else {
+      // Тест-режим без оплаты
+      router.push(`/booking/success?id=${data.booking_id}`)
+    }
   }
 
   return (
@@ -101,86 +84,84 @@ export function BookingForm({ activity }: Props) {
       <div className={styles.subtitle}>{activity.title}</div>
 
       <div className={styles.price}>
-        {totalPrice.toLocaleString('ru-RU')} ₽
+        {total.toLocaleString('ru-RU')} ₽
       </div>
       <div className={styles.priceNote}>
-        {activity.price_from.toLocaleString('ru-RU')} ₽ × {form.guests} чел.
+        {activity.price_from.toLocaleString('ru-RU')} ₽ × {guests} чел.
       </div>
 
       <div className={styles.divider} />
 
       <form onSubmit={handleSubmit}>
-        <div className={styles.row}>
+        {/* Дата */}
+        <div className={styles.field}>
+          <label className={styles.label}>Дата</label>
+          <input
+            type="date"
+            className={styles.input}
+            value={date}
+            min={today}
+            onChange={e => { setDate(e.target.value); setTime('') }}
+            required
+          />
+        </div>
+
+        {/* Время — только если есть расписание */}
+        {slots && slots.length > 0 && (
           <div className={styles.field}>
-            <label className={styles.label}>Дата</label>
-            <input
-              type="date"
-              className={styles.input}
-              value={form.date}
-              min={new Date().toISOString().split('T')[0]}
-              onChange={e => update('date', e.target.value)}
-              required
-            />
+            <label className={styles.label}>Время</label>
+            <div className={styles.timeGrid}>
+              {slots.map(s => (
+                <button
+                  key={s} type="button"
+                  className={`${styles.timeSlot} ${time === s ? styles.timeSlotActive : ''}`}
+                  onClick={() => setTime(s)}
+                >{s}</button>
+              ))}
+            </div>
           </div>
-          <div className={styles.field}>
-            <label className={styles.label}>Гостей</label>
-            <input
-              type="number"
-              className={styles.input}
-              value={form.guests}
-              min={1}
-              max={20}
-              onChange={e => update('guests', parseInt(e.target.value) || 1)}
-              required
-            />
+        )}
+
+        {/* Гости */}
+        <div className={styles.field}>
+          <label className={styles.label}>Количество гостей</label>
+          <div className={styles.counter}>
+            <button type="button" className={styles.cBtn} onClick={() => setGuests(g => Math.max(1, g - 1))}>−</button>
+            <span className={styles.cVal}>{guests}</span>
+            <button type="button" className={styles.cBtn} onClick={() => setGuests(g => g + 1)}>+</button>
           </div>
         </div>
 
+        <div className={styles.divider} />
+
+        {/* Контакты */}
         <div className={styles.field}>
           <label className={styles.label}>Ваше имя</label>
-          <input
-            type="text"
-            className={styles.input}
-            placeholder="Иван Иванов"
-            value={form.name}
-            onChange={e => update('name', e.target.value)}
-            required
-          />
+          <input type="text" className={styles.input} placeholder="Иван Иванов"
+            value={name} onChange={e => setName(e.target.value)} required />
         </div>
 
         <div className={styles.field}>
           <label className={styles.label}>Телефон</label>
-          <input
-            type="tel"
-            className={styles.input}
-            placeholder="+7 900 000 00 00"
-            value={form.phone}
-            onChange={e => update('phone', e.target.value)}
-            required
-          />
+          <input type="tel" className={styles.input} placeholder="+7 900 000 00 00"
+            value={phone} onChange={e => setPhone(e.target.value)} required />
         </div>
 
         <div className={styles.field}>
-          <label className={styles.label}>Email</label>
-          <input
-            type="email"
-            className={styles.input}
-            placeholder="ivan@mail.ru"
-            value={form.email}
-            onChange={e => update('email', e.target.value)}
-            required
-          />
+          <label className={styles.label}>Email <span className={styles.optional}>(необязательно)</span></label>
+          <input type="email" className={styles.input} placeholder="ivan@mail.ru"
+            value={email} onChange={e => setEmail(e.target.value)} />
         </div>
 
-        <button
-          type="submit"
-          className={styles.submit}
-          disabled={!isValid || loading}
-        >
-          {loading ? 'Отправляем...' : 'Забронировать'}
+        {error && <div className={styles.error}>{error}</div>}
+
+        <button type="submit" className={styles.submit} disabled={!isValid || loading}>
+          {loading ? 'Создаём бронь...' : `Оплатить ${total.toLocaleString('ru-RU')} ₽`}
         </button>
 
-        {error && <p className={styles.error}>{error}</p>}
+        <div className={styles.guarantee}>
+          Безопасная оплата · Подтверждение за 30 минут
+        </div>
       </form>
     </div>
   )

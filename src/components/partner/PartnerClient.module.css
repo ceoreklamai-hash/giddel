@@ -800,6 +800,110 @@
 .saveScheduleBtn:hover:not(:disabled) { background: var(--color-accent-hover); }
 .saveScheduleBtn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+/* ─── Аналитика ──────────────────────────────────────── */
+.analyticsWrap { max-width: 760px; display: flex; flex-direction: column; gap: 28px; }
+
+.analyticsLoading { color: rgba(255,255,255,0.3); font-size: 14px; padding: 60px 0; text-align: center; }
+.analyticsEmpty { color: rgba(255,255,255,0.2); font-size: 14px; padding: 60px 0; text-align: center; }
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.statCard {
+  background: rgba(111,168,163,0.05);
+  border: 1px solid rgba(111,168,163,0.12);
+  border-radius: 14px;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statIcon { color: var(--color-accent); }
+
+.statVal {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.statLabel { font-size: 11px; color: rgba(255,255,255,0.35); }
+
+.blockTitle {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 14px;
+}
+
+/* По месяцам */
+.monthlyBlock {}
+
+.monthlyList { display: flex; flex-direction: column; gap: 10px; }
+
+.monthRow {
+  display: grid;
+  grid-template-columns: 160px 1fr 110px;
+  grid-template-rows: auto auto;
+  gap: 4px 12px;
+  align-items: center;
+}
+
+.monthLabel { font-size: 13px; color: rgba(255,255,255,0.6); text-transform: capitalize; }
+
+.monthBar {
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.monthBarFill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.monthRevenue { font-size: 13px; font-weight: 700; color: var(--color-accent); text-align: right; }
+
+.monthMeta {
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+  grid-column: 1 / -1;
+}
+
+/* Последние брони */
+.recentBlock {}
+
+.recentList { display: flex; flex-direction: column; gap: 6px; }
+
+.recentRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: rgba(111,168,163,0.04);
+  border: 1px solid rgba(111,168,163,0.08);
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+.recentInfo { flex: 1; }
+.recentName { font-size: 14px; font-weight: 600; color: #fff; }
+.recentMeta { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 2px; }
+.recentPrice { font-size: 14px; font-weight: 700; color: var(--color-accent); white-space: nowrap; }
+
+@media (max-width: 700px) {
+  .statsGrid { grid-template-columns: 1fr 1fr; }
+  .monthRow { grid-template-columns: 120px 1fr 90px; }
+}
+
 /* ─── Адаптив ─────────────────────────────────────────── */
 @media (max-width: 900px) {
   .root { padding: 0 16px 60px; }

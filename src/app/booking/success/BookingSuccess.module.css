@@ -1,0 +1,110 @@
+/* src/app/booking/success/BookingSuccess.module.css */
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: #070e0e;
+}
+
+.card {
+  width: 100%;
+  max-width: 440px;
+  background: rgba(111,168,163,0.04);
+  border: 1px solid rgba(111,168,163,0.15);
+  border-radius: 20px;
+  padding: 48px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.icon { margin-bottom: 4px; }
+
+.title {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.6;
+  max-width: 320px;
+}
+
+.details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 8px 0;
+  padding: 20px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(111,168,163,0.1);
+}
+
+.detail {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+}
+
+.detail svg { color: var(--color-accent); flex-shrink: 0; }
+
+.total {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.btnPrimary {
+  flex: 1;
+  padding: 13px;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 10px;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.btnPrimary:hover { background: var(--color-accent-hover); }
+
+.btnSecondary {
+  flex: 1;
+  padding: 13px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+  border-radius: 10px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.btnSecondary:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+
+.loading, .error {
+  color: rgba(255,255,255,0.3);
+  font-size: 16px;
+  padding: 80px;
+  text-align: center;
+}

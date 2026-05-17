@@ -1,7 +1,7 @@
 'use client'
 // src/components/partner/PartnerClient.tsx
 import { useState, useMemo, useEffect } from 'react'
-import { ChevronLeft, ChevronRight, Plus, Check, X, Clock, Users, CalendarDays, Settings2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Plus, Check, X, Clock, Users, CalendarDays, Settings2, BarChart2, TrendingUp, Wallet } from 'lucide-react'
 import styles from './PartnerClient.module.css'
 
 interface Activity { id: string; title: string; price_from: number; duration_hours: number | null }
@@ -18,6 +18,19 @@ interface DaySchedule {
   time_from: string
   time_to: string
 }
+interface Analytics {
+  stats: {
+    totalRevenue: number
+    totalCommission: number
+    partnerEarnings: number
+    paidBookings: number
+    pendingBookings: number
+    totalGuests: number
+  } | null
+  monthly: { month: string; revenue: number; bookings: number; guests: number }[]
+  recent: (Booking & { activity: { title: string } | null })[]
+}
+
 interface Props {
   token: string
   partner: { id: string; name: string }
@@ -41,7 +54,9 @@ function defaultSchedule(): DaySchedule[] {
 }
 
 export function PartnerClient({ token, activities, initialBookings }: Props) {
-  const [view, setView] = useState<'calendar' | 'schedule'>('calendar')
+  const [view, setView] = useState<'calendar' | 'schedule' | 'analytics'>('calendar')
+  const [analytics, setAnalytics] = useState<Analytics | null>(null)
+  const [analyticsLoading, setAnalyticsLoading] = useState(false)
   const [bookings, setBookings] = useState<Booking[]>(initialBookings)
   const [year, setYear] = useState(new Date().getFullYear())
   const [month, setMonth] = useState(new Date().getMonth())
@@ -67,6 +82,16 @@ export function PartnerClient({ token, activities, initialBookings }: Props) {
       .then(d => { if (d.schedule) setSchedule(d.schedule) })
       .catch(() => {})
   }, [token])
+
+  // Загружаем аналитику при переключении на вкладку
+  useEffect(() => {
+    if (view !== 'analytics' || analytics) return
+    setAnalyticsLoading(true)
+    fetch(`/api/partner/analytics?token=${token}`)
+      .then(r => r.json())
+      .then(d => { setAnalytics(d); setAnalyticsLoading(false) })
+      .catch(() => setAnalyticsLoading(false))
+  }, [view, token, analytics])
 
   // Сетка календаря
   const calDays = useMemo(() => {
@@ -184,6 +209,12 @@ export function PartnerClient({ token, activities, initialBookings }: Props) {
           onClick={() => setView('schedule')}
         >
           <Settings2 size={15} /> Расписание
+        </button>
+        <button
+          className={`${styles.viewTab} ${view === 'analytics' ? styles.viewTabActive : ''}`}
+          onClick={() => setView('analytics')}
+        >
+          <BarChart2 size={15} /> Аналитика
         </button>
       </div>
 
@@ -382,6 +413,88 @@ export function PartnerClient({ token, activities, initialBookings }: Props) {
               ))}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ── АНАЛИТИКА ── */}
+      {view === 'analytics' && (
+        <div className={styles.analyticsWrap}>
+          {analyticsLoading && <div className={styles.analyticsLoading}>Загружаем данные...</div>}
+
+          {!analyticsLoading && analytics && (
+            <>
+              {/* Карточки-метрики */}
+              <div className={styles.statsGrid}>
+                <div className={styles.statCard}>
+                  <Wallet size={18} className={styles.statIcon} />
+                  <div className={styles.statVal}>{(analytics.stats?.partnerEarnings ?? 0).toLocaleString('ru-RU')} ₽</div>
+                  <div className={styles.statLabel}>Ваш доход</div>
+                </div>
+                <div className={styles.statCard}>
+                  <TrendingUp size={18} className={styles.statIcon} />
+                  <div className={styles.statVal}>{(analytics.stats?.totalRevenue ?? 0).toLocaleString('ru-RU')} ₽</div>
+                  <div className={styles.statLabel}>Оборот</div>
+                </div>
+                <div className={styles.statCard}>
+                  <BarChart2 size={18} className={styles.statIcon} />
+                  <div className={styles.statVal}>{analytics.stats?.paidBookings ?? 0}</div>
+                  <div className={styles.statLabel}>Оплаченных броней</div>
+                </div>
+                <div className={styles.statCard}>
+                  <Users size={18} className={styles.statIcon} />
+                  <div className={styles.statVal}>{analytics.stats?.totalGuests ?? 0}</div>
+                  <div className={styles.statLabel}>Гостей</div>
+                </div>
+              </div>
+
+              {/* По месяцам */}
+              {analytics.monthly.length > 0 && (
+                <div className={styles.monthlyBlock}>
+                  <div className={styles.blockTitle}>По месяцам</div>
+                  <div className={styles.monthlyList}>
+                    {analytics.monthly.map(m => {
+                      const [y, mo] = m.month.split('-')
+                      const label = new Date(+y, +mo - 1, 1).toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })
+                      const maxRev = Math.max(...analytics.monthly.map(x => x.revenue), 1)
+                      const pct = Math.round((m.revenue / maxRev) * 100)
+                      return (
+                        <div key={m.month} className={styles.monthRow}>
+                          <div className={styles.monthLabel}>{label}</div>
+                          <div className={styles.monthBar}>
+                            <div className={styles.monthBarFill} style={{ width: `${pct}%` }} />
+                          </div>
+                          <div className={styles.monthRevenue}>{m.revenue.toLocaleString('ru-RU')} ₽</div>
+                          <div className={styles.monthMeta}>{m.bookings} броней · {m.guests} гостей</div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Последние брони */}
+              {analytics.recent.length > 0 && (
+                <div className={styles.recentBlock}>
+                  <div className={styles.blockTitle}>Последние брони</div>
+                  <div className={styles.recentList}>
+                    {analytics.recent.map(b => (
+                      <div key={b.id} className={styles.recentRow}>
+                        <div className={styles.recentInfo}>
+                          <div className={styles.recentName}>{b.tourist_name}</div>
+                          <div className={styles.recentMeta}>{b.activity?.title} · {b.booking_date} · {b.guests_count} чел</div>
+                        </div>
+                        <div className={styles.recentPrice}>{b.total_price.toLocaleString('ru-RU')} ₽</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {!analytics.stats && (
+                <div className={styles.analyticsEmpty}>Броней пока нет — здесь появится ваша статистика</div>
+              )}
+            </>
+          )}
         </div>
       )}
 
