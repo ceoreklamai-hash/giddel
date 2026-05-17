@@ -1,0 +1,102 @@
+/* src/app/route/Route.module.css */
+
+.page {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  height: calc(100vh - 64px);
+  background: var(--color-bg);
+}
+
+/* Левая колонка */
+.left {
+  padding: 60px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid rgba(168,127,232,0.08);
+  background: linear-gradient(160deg, #0e0b1a 0%, var(--color-bg) 100%);
+}
+
+.label {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 20px;
+  display: block;
+}
+
+.title {
+  font-size: clamp(40px, 4.5vw, 64px);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 24px;
+}
+
+.title em {
+  font-style: normal;
+  color: var(--color-accent);
+}
+
+.desc {
+  font-size: 15px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.7;
+  margin-bottom: 40px;
+  max-width: 340px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: rgba(168,127,232,0.05);
+  border: 1px solid rgba(168,127,232,0.1);
+  border-radius: 4px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+}
+
+.featureIcon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* Правая — чат */
+.right {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Мобайл */
+@media (max-width: 900px) {
+  .page {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    height: auto;
+    min-height: calc(100vh - 64px);
+  }
+
+  .left {
+    padding: 36px 24px;
+    border-right: none;
+    border-bottom: 1px solid rgba(168,127,232,0.08);
+  }
+
+  .title { font-size: 36px; }
+  .features { grid-template-columns: 1fr 1fr; }
+
+  .right {
+    padding: 16px;
+    height: 70vh;
+  }
+}

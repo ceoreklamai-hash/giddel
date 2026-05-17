@@ -29,9 +29,9 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
   const activity = await getActivity(slug)
-  if (!activity) return { title: 'Не найдено — Kuban.Guide' }
+  if (!activity) return { title: 'Не найдено — Giddel' }
   return {
-    title: `${activity.title} — Kuban.Guide`,
+    title: `${activity.title} — Giddel`,
     description: activity.description ?? `${activity.title} в ${activity.location_name}. Бронирование онлайн.`,
   }
 }

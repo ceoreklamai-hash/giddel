@@ -1,7 +1,7 @@
 // src/components/booking/BookingForm.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { Activity } from '@/lib/types'
 import styles from './BookingForm.module.css'
@@ -19,6 +19,13 @@ interface FormState {
 }
 
 export function BookingForm({ activity }: Props) {
+  const [refCode, setRefCode] = useState<string | null>(null)
+
+  useEffect(() => {
+    const match = document.cookie.match(/(?:^|;\s*)ref=([^;]+)/)
+    if (match) setRefCode(decodeURIComponent(match[1]))
+  }, [])
+
   const [form, setForm] = useState<FormState>({
     date: '',
     guests: 1,
@@ -61,6 +68,7 @@ export function BookingForm({ activity }: Props) {
       total_price: totalPrice,
       commission_amount: commissionAmount,
       status: 'pending',
+      ref_code: refCode ?? null,
     })
 
     setLoading(false)

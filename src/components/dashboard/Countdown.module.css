@@ -1,0 +1,27 @@
+/* src/components/dashboard/Countdown.module.css */
+.timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #e8a85c;
+  background: rgba(232,168,92,0.1);
+  border: 1px solid rgba(232,168,92,0.2);
+  border-radius: 6px;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
+.urgent {
+  color: #e85c5c;
+  background: rgba(232,92,92,0.1);
+  border-color: rgba(232,92,92,0.25);
+  animation: flash 1s infinite;
+}
+
+@keyframes flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.65; }
+}

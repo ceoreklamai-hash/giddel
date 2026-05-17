@@ -1,0 +1,293 @@
+/* src/components/dashboard/DashboardClient.module.css */
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 0;
+  min-height: 600px;
+  align-items: start;
+}
+
+.main { width: 100%; min-width: 0; }
+
+.sidebar {
+  position: sticky;
+  top: 80px;
+  height: calc(100vh - 100px);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(111,168,163,0.1);
+  margin-left: 24px;
+}
+
+.wrap { width: 100%; }
+
+/* Тулбар */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filters {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.filterBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  padding: 7px 14px;
+  border-radius: 2px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: transparent;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.filterBtn:hover { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.15); }
+
+.filterBtn.active {
+  color: #fff;
+  background: rgba(168,127,232,0.12);
+  border-color: rgba(168,127,232,0.3);
+}
+
+.filterCount {
+  font-size: 10px;
+  background: rgba(255,255,255,0.08);
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.search {
+  background: #0c0a14;
+  border: 1px solid rgba(168,127,232,0.15);
+  border-radius: 2px;
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  padding: 8px 14px;
+  outline: none;
+  width: 280px;
+  transition: border-color 0.2s;
+}
+
+.search::placeholder { color: rgba(255,255,255,0.2); }
+.search:focus { border-color: rgba(168,127,232,0.4); }
+
+/* Таблица */
+.table {
+  border: 1px solid rgba(168,127,232,0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.thead {
+  display: grid;
+  grid-template-columns: 180px 200px 90px 70px 130px 130px 1fr;
+  background: #0c0a14;
+  border-bottom: 1px solid rgba(168,127,232,0.1);
+  padding: 10px 16px;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 180px 200px 90px 70px 130px 130px 1fr;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  align-items: center;
+  transition: background 0.15s;
+}
+
+.row:last-child { border-bottom: none; }
+.row:hover { background: rgba(168,127,232,0.04); }
+
+.guest {}
+.guestName { font-size: 13px; font-weight: 600; color: #fff; }
+.guestPhone { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 2px; }
+
+.activityTitle { font-size: 13px; color: rgba(255,255,255,0.8); }
+.activityCat { font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 2px; }
+
+.date { font-size: 13px; color: rgba(255,255,255,0.6); }
+
+.guests { font-size: 13px; color: rgba(255,255,255,0.6); }
+
+.price { font-size: 13px; font-weight: 600; color: #fff; }
+.commission { font-size: 10px; color: rgba(168,127,232,0.6); margin-top: 2px; }
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.actions { display: flex; gap: 6px; align-items: center; }
+
+.btnConfirm {
+  font-size: 11px;
+  font-weight: 600;
+  color: #000;
+  background: #6ab04c;
+  padding: 5px 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.btnConfirm:hover { background: #7acc5a; }
+
+.btnCancel {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 5px 10px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btnCancel:hover { color: #e85c5c; border-color: rgba(232,92,92,0.3); }
+
+/* Баннер календаря */
+.calBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: rgba(168,127,232,0.06);
+  border: 1px solid rgba(168,127,232,0.15);
+  border-radius: 4px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.calBannerLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.calIcon { font-size: 24px; flex-shrink: 0; }
+
+.calTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 3px;
+}
+
+.calDesc {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  max-width: 480px;
+}
+
+.calCopyBtn {
+  font-size: 12px;
+  font-weight: 600;
+  color: #a87fe8;
+  background: rgba(168,127,232,0.1);
+  border: 1px solid rgba(168,127,232,0.25);
+  border-radius: 2px;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.calCopyBtn:hover {
+  background: rgba(168,127,232,0.18);
+  border-color: rgba(168,127,232,0.45);
+}
+
+/* Кнопки напоминания и .ics */
+.btnRemind {
+  width: 30px;
+  height: 30px;
+  font-size: 14px;
+  background: rgba(255,200,50,0.08);
+  border: 1px solid rgba(255,200,50,0.2);
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btnRemind:hover:not(:disabled) {
+  background: rgba(255,200,50,0.15);
+  border-color: rgba(255,200,50,0.4);
+}
+
+.btnRemind:disabled { opacity: 0.5; cursor: default; }
+
+.btnIcs {
+  width: 30px;
+  height: 30px;
+  font-size: 14px;
+  background: rgba(106,176,76,0.08);
+  border: 1px solid rgba(106,176,76,0.2);
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.btnIcs:hover {
+  background: rgba(106,176,76,0.15);
+  border-color: rgba(106,176,76,0.4);
+}
+
+.empty {
+  text-align: center;
+  padding: 60px;
+  color: rgba(255,255,255,0.2);
+  font-size: 14px;
+}
+
+@media (max-width: 1200px) {
+  .thead, .row {
+    grid-template-columns: 160px 1fr 80px 60px 110px 110px auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .thead { display: none; }
+  .row {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 8px;
+    padding: 16px;
+  }
+  .search { width: 100%; }
+}

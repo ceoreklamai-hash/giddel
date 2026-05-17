@@ -1,22 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Cormorant+Garant:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
 
 :root {
-  --color-bg: #09080f;
-  --color-bg-2: #0c0a14;
-  --color-bg-wine: #0c0a14;
-  --color-accent: #a87fe8;
-  --color-accent-hover: #b890f5;
-  --color-accent-2: #6ab04c;
-  --color-accent-2-hover: #7acc5a;
-  --color-text: #f0f0f0;
-  --color-text-muted: rgba(255, 255, 255, 0.45);
-  --color-border: rgba(168, 127, 232, 0.12);
-  --color-border-2: rgba(106, 176, 76, 0.12);
+  --color-bg: #070e0e;
+  --color-bg-2: #0c1515;
+  --color-bg-wine: #0c1515;
+  --color-accent: #6fa8a3;
+  --color-accent-hover: #7fbbb6;
+  --color-accent-2: #8ab87c;
+  --color-accent-2-hover: #9acc8c;
+  --color-text: #edf4f3;
+  --color-text-muted: rgba(237, 244, 243, 0.45);
+  --color-border: rgba(111, 168, 163, 0.15);
+  --color-border-2: rgba(138, 184, 124, 0.12);
 
-  --font-serif: 'Manrope', sans-serif;
+  --font-serif: 'Cormorant Garant', Georgia, serif;
   --font-sans: 'Manrope', sans-serif;
 
-  --radius: 4px;
+  --radius: 14px;
   --transition: 0.25s ease;
 }
 
@@ -34,10 +34,10 @@ body {
 }
 
 h1, h2, h3, h4 {
-  font-family: var(--font-sans);
-  font-weight: 700;
+  font-family: var(--font-serif);
+  font-weight: 600;
   line-height: 1.1;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
 }
 
 a { color: inherit; text-decoration: none; }

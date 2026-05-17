@@ -15,10 +15,10 @@
 
 .logo {
   font-family: var(--font-sans);
-  font-size: 13px;
-  letter-spacing: 4px;
+  font-size: 20px;
+  letter-spacing: 6px;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 800;
   color: #fff;
   pointer-events: all;
   transition: opacity var(--transition);
@@ -28,19 +28,57 @@
 
 .links {
   display: flex;
-  gap: 32px;
+  gap: 28px;
+  align-items: center;
   pointer-events: all;
 }
 
 .link {
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 600;
   letter-spacing: 0.5px;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.85);
   transition: color var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .link:hover { color: var(--color-accent); }
+
+.routeBtn {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--color-accent);
+  transition: color var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.routeBtn:hover { color: var(--color-accent-hover); }
+
+.vipBtn {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #c9a227;
+  border: 1px solid rgba(201,162,39,0.35);
+  padding: 6px 14px;
+  border-radius: 50px;
+  transition: all var(--transition);
+}
+
+.vipBtn:hover {
+  color: #ddb52e;
+  border-color: rgba(201,162,39,0.65);
+  background: rgba(201,162,39,0.06);
+}
 
 @media (max-width: 640px) {
   .nav { padding: 16px 20px; }

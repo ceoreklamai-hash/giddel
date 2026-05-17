@@ -1,0 +1,127 @@
+/* src/app/map/Map.module.css */
+
+.page {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  height: calc(100vh - 64px);
+  background: var(--color-bg);
+}
+
+/* Боковая панель */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  padding: 36px 28px;
+  background: #0c0a14;
+  border-right: 1px solid rgba(168,127,232,0.1);
+  overflow-y: auto;
+}
+
+.sideHeader {
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  margin: 12px 0 10px;
+}
+
+.desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.6;
+}
+
+/* Легенда */
+.legend {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 28px;
+}
+
+.legendTitle {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(168,127,232,0.7);
+  margin-bottom: 12px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 2px;
+  transition: background 0.2s;
+  cursor: default;
+}
+
+.legendItem:hover {
+  background: rgba(168,127,232,0.06);
+}
+
+.legendLabel {
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+}
+
+.legendCount {
+  font-size: 11px;
+  color: rgba(168,127,232,0.6);
+  font-weight: 600;
+  background: rgba(168,127,232,0.08);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.ctaBtn {
+  display: block;
+  text-align: center;
+  border: 1px solid rgba(168,127,232,0.3);
+  color: rgba(255,255,255,0.6);
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 12px;
+  border-radius: 2px;
+  transition: all 0.25s;
+}
+
+.ctaBtn:hover {
+  border-color: #a87fe8;
+  color: #a87fe8;
+}
+
+/* Карта */
+.mapWrap {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Мобайл */
+@media (max-width: 768px) {
+  .page {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    height: auto;
+    min-height: calc(100vh - 64px);
+  }
+
+  .sidebar {
+    border-right: none;
+    border-bottom: 1px solid rgba(168,127,232,0.1);
+    padding: 24px;
+  }
+
+  .legend { display: none; }
+
+  .mapWrap {
+    height: 70vh;
+  }
+}

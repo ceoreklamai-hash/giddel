@@ -11,7 +11,7 @@ import { CATEGORY_LABELS } from '@/lib/types'
 import styles from './Activities.module.css'
 
 export const metadata: Metadata = {
-  title: 'Активности — Kuban.Guide',
+  title: 'Активности — Giddel',
   description: 'Все активности Краснодарского края: яхты, конные прогулки, квадроциклы, сёрфинг, виноделие и многое другое.',
 }
 

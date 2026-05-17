@@ -1,0 +1,59 @@
+/* src/app/dashboard/Dashboard.module.css */
+
+.page {
+  min-height: 100vh;
+  background: var(--color-bg);
+  padding: 100px 48px 60px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 36px;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #fff;
+  margin-top: 10px;
+}
+
+/* Статистика */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  margin-bottom: 40px;
+}
+
+.stat {
+  background: #0c0a14;
+  border: 1px solid rgba(168,127,232,0.08);
+  padding: 24px 20px;
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.statLabel {
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+}
+
+@media (max-width: 1024px) {
+  .page { padding: 90px 24px 40px; }
+  .stats { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .stats { grid-template-columns: 1fr 1fr; }
+}

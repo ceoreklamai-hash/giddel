@@ -1,0 +1,35 @@
+/* src/app/partner/[token]/Partner.module.css */
+
+.page {
+  min-height: 100vh;
+  background: #070e0e;
+  color: #edf4f3;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 40px;
+  border-bottom: 1px solid rgba(111,168,163,0.1);
+  background: rgba(111,168,163,0.03);
+}
+
+.logo {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.partnerName {
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.3px;
+}
+
+@media (max-width: 640px) {
+  .header { padding: 14px 20px; }
+}

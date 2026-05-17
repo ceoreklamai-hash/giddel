@@ -1,0 +1,271 @@
+/* src/components/vip/VipForm.module.css */
+
+.form {
+  background: #0c0a14;
+  border: 1px solid rgba(201,162,39,0.2);
+  border-radius: 4px;
+  padding: 40px;
+  max-width: 520px;
+  width: 100%;
+}
+
+/* Прогресс */
+.steps {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 36px;
+}
+
+.step {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(201,162,39,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.25);
+  transition: all 0.3s;
+}
+
+.step.active {
+  border-color: #c9a227;
+  color: #c9a227;
+  background: rgba(201,162,39,0.1);
+}
+
+/* Контент шага */
+.stepContent { display: flex; flex-direction: column; gap: 24px; }
+
+.stepTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.stepDesc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.4);
+  margin-top: -16px;
+  line-height: 1.5;
+}
+
+/* Поля */
+.field { display: flex; flex-direction: column; gap: 8px; }
+
+.label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+
+.input, .textarea {
+  background: #0f0d1e;
+  border: 1px solid rgba(201,162,39,0.2);
+  border-radius: 2px;
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  padding: 12px 16px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.input:focus, .textarea:focus { border-color: rgba(201,162,39,0.5); }
+.textarea { resize: vertical; }
+
+.dateRow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Счётчик гостей */
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #0f0d1e;
+  border: 1px solid rgba(201,162,39,0.2);
+  border-radius: 2px;
+  padding: 8px 16px;
+  width: fit-content;
+}
+
+.counterBtn {
+  font-size: 20px;
+  color: #c9a227;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.counterBtn:hover { opacity: 0.7; }
+.counterVal { font-size: 20px; font-weight: 700; color: #fff; min-width: 24px; text-align: center; }
+
+/* Бюджет */
+.budgetGrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+.budgetBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 8px;
+  border: 1px solid rgba(201,162,39,0.15);
+  border-radius: 2px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.budgetBtn:hover { border-color: rgba(201,162,39,0.4); }
+
+.budgetBtn.budgetActive {
+  border-color: #c9a227;
+  background: rgba(201,162,39,0.1);
+}
+
+.budgetLabel { font-size: 13px; font-weight: 700; color: #fff; }
+.budgetDesc { font-size: 10px; color: rgba(255,255,255,0.35); text-align: center; }
+
+/* Потребности */
+.needsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.needBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 4px;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 2px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  transition: all 0.2s;
+}
+
+.needBtn:hover { border-color: rgba(201,162,39,0.3); color: rgba(255,255,255,0.7); }
+
+.needBtn.needActive {
+  border-color: #c9a227;
+  background: rgba(201,162,39,0.1);
+  color: #c9a227;
+}
+
+.needBtn span:first-child { font-size: 20px; }
+
+/* Метод связи */
+.methodRow { display: flex; gap: 8px; }
+
+.methodBtn {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 2px;
+  background: transparent;
+  color: rgba(255,255,255,0.4);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.methodBtn:hover { border-color: rgba(201,162,39,0.3); color: rgba(255,255,255,0.7); }
+
+.methodBtn.methodActive {
+  border-color: #c9a227;
+  background: rgba(201,162,39,0.1);
+  color: #c9a227;
+  font-weight: 600;
+}
+
+.privacy {
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* Кнопки */
+.btnRow { display: flex; gap: 10px; }
+
+.nextBtn {
+  flex: 1;
+  background: #c9a227;
+  color: #000;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.nextBtn:hover { background: #ddb52e; }
+
+.backBtn {
+  padding: 14px 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 2px;
+  color: rgba(255,255,255,0.4);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.backBtn:hover { color: rgba(255,255,255,0.7); }
+
+.submitBtn {
+  flex: 1;
+  background: #c9a227;
+  color: #000;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.submitBtn:hover:not(:disabled) { background: #ddb52e; }
+.submitBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Успех */
+.success {
+  text-align: center;
+  padding: 60px 40px;
+  background: #0c0a14;
+  border: 1px solid rgba(201,162,39,0.2);
+  border-radius: 4px;
+  max-width: 520px;
+  width: 100%;
+}
+
+.successIcon { font-size: 40px; color: #c9a227; margin-bottom: 16px; }
+
+.successId {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: #c9a227;
+  margin-bottom: 20px;
+}
+
+.successTitle { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+
+.successText { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.7; }
+
+@media (max-width: 640px) {
+  .form { padding: 24px; }
+  .needsGrid { grid-template-columns: repeat(4, 1fr); }
+  .budgetGrid { grid-template-columns: 1fr; }
+}

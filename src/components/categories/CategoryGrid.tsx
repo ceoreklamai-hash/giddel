@@ -4,8 +4,13 @@ import Link from 'next/link'
 import { CATEGORY_LABELS, CATEGORY_IMAGES, type Category } from '@/lib/types'
 import styles from './CategoryGrid.module.css'
 
-// Порядок: море → вино → природа → активности → вода → горы
-const SHOWN_CATEGORIES: Category[] = ['diving', 'yacht', 'wine', 'horse', 'quad', 'surf', 'fishing', 'canyon']
+// Порядок: море → вино → природа → активности → вода → горы → воздух → экстрим
+const SHOWN_CATEGORIES: Category[] = [
+  'diving', 'yacht', 'wine', 'horse',
+  'quad', 'surf', 'fishing', 'canyon',
+  'paraglide', 'jeep', 'kayak', 'farm',
+  'spa', 'helicopter', 'zipline', 'skydive',
+]
 
 export function CategoryGrid() {
   return (
