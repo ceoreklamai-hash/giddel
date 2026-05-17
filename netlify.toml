@@ -4,6 +4,13 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  NODE_TLS_REJECT_UNAUTHORIZED = "0"
+
+[functions]
+  node_bundler = "esbuild"
+
+[functions.environment]
+  NODE_TLS_REJECT_UNAUTHORIZED = "0"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"

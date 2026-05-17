@@ -93,6 +93,12 @@
       "namedRegex": "^/admin/login(?:/)?$"
     },
     {
+      "page": "/admin-guide",
+      "regex": "^/admin\\-guide(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin\\-guide(?:/)?$"
+    },
+    {
       "page": "/api/admin/action",
       "regex": "^/api/admin/action(?:/)?$",
       "routeKeys": {},
@@ -121,6 +127,18 @@
       "regex": "^/api/admin/partner(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/admin/partner(?:/)?$"
+    },
+    {
+      "page": "/api/assistant",
+      "regex": "^/api/assistant(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/assistant(?:/)?$"
+    },
+    {
+      "page": "/api/auth/login",
+      "regex": "^/api/auth/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/login(?:/)?$"
     },
     {
       "page": "/api/bookings/expire",
@@ -153,6 +171,12 @@
       "namedRegex": "^/api/chat(?:/)?$"
     },
     {
+      "page": "/api/partner/analytics",
+      "regex": "^/api/partner/analytics(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/partner/analytics(?:/)?$"
+    },
+    {
       "page": "/api/partner/availability",
       "regex": "^/api/partner/availability(?:/)?$",
       "routeKeys": {},
@@ -163,6 +187,24 @@
       "regex": "^/api/partner/bookings(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/partner/bookings(?:/)?$"
+    },
+    {
+      "page": "/api/payment/create",
+      "regex": "^/api/payment/create(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/payment/create(?:/)?$"
+    },
+    {
+      "page": "/api/payment/success",
+      "regex": "^/api/payment/success(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/payment/success(?:/)?$"
+    },
+    {
+      "page": "/api/payment/webhook",
+      "regex": "^/api/payment/webhook(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/payment/webhook(?:/)?$"
     },
     {
       "page": "/api/reminders",
@@ -189,10 +231,28 @@
       "namedRegex": "^/api/vip(?:/)?$"
     },
     {
+      "page": "/auth/login",
+      "regex": "^/auth/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/auth/login(?:/)?$"
+    },
+    {
+      "page": "/booking/success",
+      "regex": "^/booking/success(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/booking/success(?:/)?$"
+    },
+    {
       "page": "/chat",
       "regex": "^/chat(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/chat(?:/)?$"
+    },
+    {
+      "page": "/contacts",
+      "regex": "^/contacts(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/contacts(?:/)?$"
     },
     {
       "page": "/dashboard",
@@ -207,16 +267,46 @@
       "namedRegex": "^/favicon\\.ico(?:/)?$"
     },
     {
+      "page": "/how-it-works",
+      "regex": "^/how\\-it\\-works(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/how\\-it\\-works(?:/)?$"
+    },
+    {
       "page": "/map",
       "regex": "^/map(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/map(?:/)?$"
     },
     {
+      "page": "/partner-guide",
+      "regex": "^/partner\\-guide(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/partner\\-guide(?:/)?$"
+    },
+    {
+      "page": "/privacy",
+      "regex": "^/privacy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/privacy(?:/)?$"
+    },
+    {
+      "page": "/profile",
+      "regex": "^/profile(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/profile(?:/)?$"
+    },
+    {
       "page": "/route",
       "regex": "^/route(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/route(?:/)?$"
+    },
+    {
+      "page": "/terms",
+      "regex": "^/terms(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/terms(?:/)?$"
     },
     {
       "page": "/vip",

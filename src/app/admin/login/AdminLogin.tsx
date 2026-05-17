@@ -1,11 +1,9 @@
 'use client'
 // src/app/admin/login/AdminLogin.tsx
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import styles from './AdminLogin.module.css'
 
 export function AdminLogin() {
-  const router = useRouter()
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -24,8 +22,7 @@ export function AdminLogin() {
 
     const data = await res.json()
     if (data.ok) {
-      router.push('/admin')
-      router.refresh()
+      window.location.href = '/admin'
     } else {
       setError(data.error ?? 'Ошибка входа')
     }

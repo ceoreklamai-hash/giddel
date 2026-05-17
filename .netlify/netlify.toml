@@ -6,7 +6,11 @@ remote_images = ["^(?:https:\\/\\/images\\.unsplash\\.com(?:\\/(?!\\.)(?:(?:(?!(
 
 [functions]
 
+[functions.environment]
+NODE_TLS_REJECT_UNAUTHORIZED = "0"
+
 [functions."*"]
+node_bundler = "esbuild"
 
 [[plugins]]
 origin = "config"
@@ -22,6 +26,7 @@ command = "npm run build"
 
 [build.environment]
 NODE_VERSION = "20"
+NODE_TLS_REJECT_UNAUTHORIZED = "0"
 
 [build.processing]
 

@@ -1,5 +1,5 @@
 // src/app/api/admin/activity/route.ts
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin'
 
 function toSlug(title: string) {
   return title.toLowerCase()

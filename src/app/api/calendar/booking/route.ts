@@ -1,7 +1,7 @@
 // src/app/api/calendar/booking/route.ts
 // GET /api/calendar/booking?id=xxx
 // Скачать .ics для конкретного бронирования (для клиента)
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin'
 
 function formatICalDate(dateStr: string): string {
   const d = new Date(dateStr)

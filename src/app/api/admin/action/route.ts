@@ -1,7 +1,7 @@
 // src/app/api/admin/action/route.ts
 // Исполняет действия из AI-ассистента: добавляет активности, виноделни, обновляет статусы
 
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin'
 
 interface AddActivityData {
   title: string

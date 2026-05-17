@@ -1,7 +1,7 @@
 'use client'
 // src/components/admin/AdminPanel.tsx
 import { useState } from 'react'
-import { Plus, Copy, Check, ExternalLink, Power, Trash2 } from 'lucide-react'
+import { Plus, Copy, Check, ExternalLink, Power } from 'lucide-react'
 import { CATEGORY_LABELS } from '@/lib/types'
 import type { Category } from '@/lib/types'
 import styles from './AdminPanel.module.css'
@@ -12,14 +12,30 @@ interface Partner {
 interface Activity {
   id: string; title: string; category: string; price_from: number; is_active: boolean; partner_id: string | null; location_name: string | null
 }
+interface Booking {
+  id: string; status: string; total_price: number; commission_amount: number; created_at: string; source: string | null;
+  tourist_name: string | null; tourist_phone: string | null; tourist_email: string | null;
+  booking_date: string; guests_count: number;
+  activity: { title: string; partner_id: string | null } | null
+}
+
+const STATUS_LABEL: Record<string, string> = {
+  pending: 'Ожидает', confirmed: 'Подтверждено', paid: 'Оплачено', cancelled: 'Отменено',
+}
+const STATUS_COLOR: Record<string, string> = {
+  pending: '#e8a85c', confirmed: '#6ab04c', paid: '#6fa8a3', cancelled: '#555',
+}
 
 const PARTNER_DEFAULT = { name: '', phone: '', email: '', commission_pct: 10 }
 const ACTIVITY_DEFAULT = { title: '', category: 'quad', price_from: 0, duration_hours: 2, location_name: '', description: '', partner_id: '' }
 
-export function AdminPanel({ initialPartners, initialActivities }: { initialPartners: Partner[], initialActivities: Activity[] }) {
-  const [tab, setTab] = useState<'partners' | 'activities'>('partners')
+export function AdminPanel({ initialPartners, initialActivities, initialBookings }: {
+  initialPartners: Partner[], initialActivities: Activity[], initialBookings: Booking[]
+}) {
+  const [tab, setTab] = useState<'partners' | 'activities' | 'bookings'>('bookings')
   const [partners, setPartners] = useState(initialPartners)
   const [activities, setActivities] = useState(initialActivities)
+  const [bookings] = useState(initialBookings)
   const [showPartnerForm, setShowPartnerForm] = useState(false)
   const [showActivityForm, setShowActivityForm] = useState(false)
   const [partnerForm, setPartnerForm] = useState(PARTNER_DEFAULT)
@@ -82,6 +98,9 @@ export function AdminPanel({ initialPartners, initialActivities }: { initialPart
     <div className={styles.wrap}>
       {/* Табы */}
       <div className={styles.tabs}>
+        <button className={`${styles.tab} ${tab === 'bookings' ? styles.tabActive : ''}`} onClick={() => setTab('bookings')}>
+          Заявки <span className={styles.cnt}>{bookings.length}</span>
+        </button>
         <button className={`${styles.tab} ${tab === 'partners' ? styles.tabActive : ''}`} onClick={() => setTab('partners')}>
           Партнёры <span className={styles.cnt}>{partners.length}</span>
         </button>
@@ -89,6 +108,41 @@ export function AdminPanel({ initialPartners, initialActivities }: { initialPart
           Активности <span className={styles.cnt}>{activities.length}</span>
         </button>
       </div>
+
+      {/* ЗАЯВКИ */}
+      {tab === 'bookings' && (
+        <div className={styles.section}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionTitle}>Все заявки</span>
+          </div>
+          <div className={styles.bookingList}>
+            {bookings.map(b => (
+              <div key={b.id} className={styles.bookingRow}>
+                <div className={styles.bookingMain}>
+                  <div className={styles.bookingTitle}>{b.activity?.title ?? '—'}</div>
+                  <div className={styles.bookingMeta}>
+                    {b.tourist_name && <span>{b.tourist_name}</span>}
+                    {b.tourist_phone && <span>{b.tourist_phone}</span>}
+                    {b.tourist_email && <span>{b.tourist_email}</span>}
+                    <span>{b.booking_date}</span>
+                    <span>{b.guests_count} чел.</span>
+                  </div>
+                </div>
+                <div className={styles.bookingRight}>
+                  <div className={styles.bookingPrice}>{b.total_price.toLocaleString('ru-RU')} ₽</div>
+                  <div className={styles.bookingStatus} style={{ color: STATUS_COLOR[b.status] }}>
+                    {STATUS_LABEL[b.status]}
+                  </div>
+                  <div className={styles.bookingDate}>
+                    {new Date(b.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                </div>
+              </div>
+            ))}
+            {bookings.length === 0 && <div className={styles.empty}>Заявок пока нет</div>}
+          </div>
+        </div>
+      )}
 
       {/* ПАРТНЁРЫ */}
       {tab === 'partners' && (

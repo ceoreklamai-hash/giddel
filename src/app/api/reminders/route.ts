@@ -2,7 +2,7 @@
 // GET — список бронирований на завтра (для cron)
 // POST — пометить напоминание отправленным
 
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)

@@ -1,7 +1,7 @@
 // src/app/api/calendar/feed/route.ts
 // GET /api/calendar/feed?token=xxx
 // iCal-лента для подключения в Google/Apple/Outlook Calendar
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin'
 
 function formatICalDate(dateStr: string): string {
   const d = new Date(dateStr)

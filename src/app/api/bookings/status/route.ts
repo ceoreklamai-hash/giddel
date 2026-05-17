@@ -1,5 +1,5 @@
 // src/app/api/bookings/status/route.ts
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin'
 
 const VALID_STATUSES = ['pending', 'paid', 'confirmed', 'cancelled'] as const
 

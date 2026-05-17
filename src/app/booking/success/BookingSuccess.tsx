@@ -15,7 +15,7 @@ interface BookingData {
   tourist_name: string
   tourist_phone: string
   guests_count: number
-  activity: { title: string } | null
+  activity: { title: string; images: string[] | null; location_name: string | null } | null
 }
 
 export function BookingSuccess() {
@@ -46,9 +46,18 @@ export function BookingSuccess() {
 
   const isPaid = booking.status === 'paid' || booking.status === 'confirmed'
 
+  const image = booking.activity?.images?.[0]
+
   return (
     <div className={styles.page}>
       <div className={styles.card}>
+        {image && (
+          <div className={styles.image}>
+            <img src={image} alt={booking.activity?.title ?? ''} />
+            <div className={styles.imageOverlay} />
+          </div>
+        )}
+
         <div className={styles.icon}>
           <CheckCircle size={52} strokeWidth={1.5} color={isPaid ? '#6ab04c' : '#6fa8a3'} />
         </div>

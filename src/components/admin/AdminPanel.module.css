@@ -135,6 +135,24 @@
 
 .empty { padding: 40px; text-align: center; color: rgba(255,255,255,0.2); font-size: 13px; }
 
+/* Заявки */
+.bookingList { display: flex; flex-direction: column; gap: 8px; }
+
+.bookingRow {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+  background: rgba(111,168,163,0.04); border: 1px solid rgba(111,168,163,0.08);
+  border-radius: 10px; padding: 14px 18px;
+}
+
+.bookingMain { flex: 1; min-width: 0; }
+.bookingTitle { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bookingMeta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 11px; color: rgba(255,255,255,0.35); }
+
+.bookingRight { text-align: right; flex-shrink: 0; }
+.bookingPrice { font-size: 15px; font-weight: 700; color: #fff; }
+.bookingStatus { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+.bookingDate { font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 2px; }
+
 @media (max-width: 768px) {
   .wrap { padding: 20px 16px; }
   .formGrid { grid-template-columns: 1fr; }

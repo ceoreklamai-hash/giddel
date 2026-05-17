@@ -2,7 +2,7 @@
 // GET  ?token=xxx  — расписание партнёра (7 дней)
 // POST ?token=xxx  — сохранить расписание
 
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin'
 
 const DAYS = 7
 

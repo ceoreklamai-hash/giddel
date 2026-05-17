@@ -1,5 +1,5 @@
 // src/app/api/admin/partner/route.ts
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin'
 
 export async function POST(request: Request) {
   const body = await request.json()

@@ -1,7 +1,7 @@
 // src/app/api/partner/analytics/route.ts
 // Отчётность партнёра: доходы, комиссии, статистика по месяцам
 
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin'
 
 async function getPartner(token: string) {
   const { data } = await supabase

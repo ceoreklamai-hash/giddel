@@ -8,6 +8,7 @@ import { MapView } from '@/components/activities/MapView'
 import { supabase } from '@/lib/supabase'
 import type { Activity, Category } from '@/lib/types'
 import { CATEGORY_LABELS } from '@/lib/types'
+import { GurmanChat } from '@/components/gurman/GurmanChat'
 import styles from './Activities.module.css'
 
 export const metadata: Metadata = {
@@ -49,6 +50,7 @@ export default async function ActivitiesPage({ searchParams }: PageProps) {
   return (
     <>
       <Nav />
+      <GurmanChat />
       <div className={styles.page}>
         <div className={styles.header}>
           <div className={styles.headerTop}>

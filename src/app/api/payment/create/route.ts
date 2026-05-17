@@ -1,7 +1,7 @@
 // src/app/api/payment/create/route.ts
 // Создаём платёж в YooKassa, сохраняем бронь со статусом pending
 
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin'
 import { randomUUID } from 'crypto'
 
 const YK_SHOP_ID = process.env.YOOKASSA_SHOP_ID ?? ''

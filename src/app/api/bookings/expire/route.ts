@@ -1,6 +1,6 @@
 // src/app/api/bookings/expire/route.ts
 // Отменяет бронирования, не подтверждённые за 30 минут
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin'
 
 export async function POST() {
   const { data, error } = await supabase

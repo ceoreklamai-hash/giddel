@@ -1,0 +1,298 @@
+/* src/app/how-it-works/HowItWorks.module.css */
+.page { min-height: 100vh; background: #070e0e; color: #edf4f3; }
+
+/* Герой */
+.hero {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 80px 24px 60px;
+  text-align: center;
+}
+
+.heroTag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  background: rgba(111,168,163,0.1);
+  border: 1px solid rgba(111,168,163,0.2);
+  border-radius: 20px;
+  padding: 6px 16px;
+  margin-bottom: 24px;
+}
+
+.heroTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+.heroSub {
+  font-size: 16px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.7;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* Шаги */
+.steps {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 60px 64px 1fr;
+  gap: 0 24px;
+  align-items: start;
+  background: rgba(111,168,163,0.03);
+  border: 1px solid rgba(111,168,163,0.1);
+  border-radius: 16px;
+  padding: 28px 32px;
+  transition: border-color 0.2s;
+}
+
+.step:hover { border-color: rgba(111,168,163,0.22); }
+
+.stepNum {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  font-weight: 700;
+  color: rgba(111,168,163,0.2);
+  line-height: 1;
+  padding-top: 4px;
+}
+
+.stepIcon {
+  width: 52px;
+  height: 52px;
+  background: rgba(111,168,163,0.08);
+  border: 1px solid rgba(111,168,163,0.15);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.stepContent { padding-top: 4px; }
+
+.stepTitle {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.stepText {
+  font-size: 15px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.65;
+  margin-bottom: 14px;
+}
+
+.stepTip {
+  font-size: 13px;
+  color: var(--color-accent);
+  background: rgba(111,168,163,0.06);
+  border-left: 2px solid rgba(111,168,163,0.3);
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  line-height: 1.5;
+}
+
+/* Гарантии */
+.guarantees {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+.sectionTitle {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.guaranteeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.gCard {
+  background: rgba(111,168,163,0.03);
+  border: 1px solid rgba(111,168,163,0.1);
+  border-radius: 14px;
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.2s;
+}
+
+.gCard:hover { border-color: rgba(111,168,163,0.22); }
+
+.gIcon { color: var(--color-accent); }
+
+.gTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.gText {
+  font-size: 13px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.6;
+}
+
+/* FAQ */
+.faq {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+.faqList { display: flex; flex-direction: column; gap: 6px; }
+
+.faqItem {
+  background: rgba(111,168,163,0.03);
+  border: 1px solid rgba(111,168,163,0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.faqItem[open] { border-color: rgba(111,168,163,0.22); }
+
+.faqQ {
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+  padding: 18px 22px;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.faqQ::-webkit-details-marker { display: none; }
+
+.faqQ::after {
+  content: '+';
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--color-accent);
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.faqItem[open] .faqQ::after { transform: rotate(45deg); }
+
+.faqA {
+  font-size: 14px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.65;
+  padding: 0 22px 18px;
+}
+
+/* CTA */
+.cta {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 24px 100px;
+  text-align: center;
+}
+
+.ctaTitle {
+  font-family: var(--font-serif);
+  font-size: 36px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.ctaSub {
+  font-size: 16px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 32px;
+}
+
+.ctaBtns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.ctaBtnPrimary {
+  padding: 14px 32px;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 10px;
+  transition: background 0.2s;
+}
+
+.ctaBtnPrimary:hover { background: var(--color-accent-hover); }
+
+.ctaBtnSecondary {
+  padding: 14px 28px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+
+.ctaBtnSecondary:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+
+.ctaContacts {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.ctaContact {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.35);
+  transition: color 0.15s;
+}
+
+.ctaContact:hover { color: var(--color-accent); }
+
+@media (max-width: 768px) {
+  .hero { padding: 60px 20px 40px; }
+  .step { grid-template-columns: 40px 1fr; grid-template-rows: auto auto; }
+  .stepNum { font-size: 24px; }
+  .stepIcon { display: none; }
+  .guaranteeGrid { grid-template-columns: 1fr 1fr; }
+  .ctaBtns { flex-direction: column; }
+}
+
+@media (max-width: 480px) {
+  .guaranteeGrid { grid-template-columns: 1fr; }
+}

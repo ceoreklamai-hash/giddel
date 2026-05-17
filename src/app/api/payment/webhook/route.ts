@@ -2,7 +2,7 @@
 // YooKassa шлёт сюда уведомления об оплате
 // Настройте в ЛК YooKassa: URL вебхука = https://giddel.ru/api/payment/webhook
 
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin'
 import { sendTelegramNotification } from '@/lib/telegram'
 
 export async function POST(request: Request) {
