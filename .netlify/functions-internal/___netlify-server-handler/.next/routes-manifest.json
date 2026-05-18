@@ -129,6 +129,12 @@
       "namedRegex": "^/api/admin/partner(?:/)?$"
     },
     {
+      "page": "/api/admin/partner-requests",
+      "regex": "^/api/admin/partner\\-requests(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/admin/partner\\-requests(?:/)?$"
+    },
+    {
       "page": "/api/assistant",
       "regex": "^/api/assistant(?:/)?$",
       "routeKeys": {},
@@ -169,6 +175,12 @@
       "regex": "^/api/chat(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/chat(?:/)?$"
+    },
+    {
+      "page": "/api/gurman",
+      "regex": "^/api/gurman(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/gurman(?:/)?$"
     },
     {
       "page": "/api/partner/analytics",
@@ -223,6 +235,12 @@
       "regex": "^/api/sommelier(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/api/sommelier(?:/)?$"
+    },
+    {
+      "page": "/api/telegram/webhook",
+      "regex": "^/api/telegram/webhook(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/telegram/webhook(?:/)?$"
     },
     {
       "page": "/api/vip",

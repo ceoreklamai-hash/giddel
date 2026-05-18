@@ -1,17 +1,15 @@
 'use client'
 // src/components/booking/BookingForm.tsx
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Activity } from '@/lib/types'
 import styles from './BookingForm.module.css'
 
 interface Props {
   activity: Activity
-  availableSlots?: string[] // слоты из расписания партнёра
-  takenSlots?: string[]     // уже занятые слоты на выбранную дату
 }
 
-export function BookingForm({ activity, availableSlots, takenSlots = [] }: Props) {
+export function BookingForm({ activity }: Props) {
   const router = useRouter()
   const [refCode, setRefCode] = useState<string | null>(null)
 
@@ -24,6 +22,8 @@ export function BookingForm({ activity, availableSlots, takenSlots = [] }: Props
 
   const [date, setDate] = useState('')
   const [time, setTime] = useState('')
+  const [freeSlots, setFreeSlots] = useState<string[] | null>(null)
+  const [slotsLoading, setSlotsLoading] = useState(false)
   const [guests, setGuests] = useState(1)
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
@@ -33,10 +33,26 @@ export function BookingForm({ activity, availableSlots, takenSlots = [] }: Props
 
   const total = activity.price_from * guests
 
-  const slots = useMemo(() => {
-    if (!availableSlots || availableSlots.length === 0) return null // не показываем выбор времени
-    return availableSlots.filter(s => !takenSlots.includes(s))
-  }, [availableSlots, takenSlots])
+  const loadSlots = useCallback(async (d: string) => {
+    setSlotsLoading(true)
+    setFreeSlots(null)
+    setTime('')
+    try {
+      const res = await fetch(`/api/activities/availability?activity_id=${activity.id}&date=${d}`)
+      const data = await res.json()
+      setFreeSlots(data.free ?? [])
+    } catch {
+      setFreeSlots([])
+    } finally {
+      setSlotsLoading(false)
+    }
+  }, [activity.id])
+
+  function handleDateChange(d: string) {
+    setDate(d)
+    if (d) loadSlots(d)
+    else setFreeSlots(null)
+  }
 
   const isValid = date && name.trim().length >= 2 && phone.trim().length >= 10
 
@@ -70,10 +86,8 @@ export function BookingForm({ activity, availableSlots, takenSlots = [] }: Props
     }
 
     if (data.payment_url) {
-      // Редирект на оплату YooKassa
       window.location.href = data.payment_url
     } else {
-      // Тест-режим без оплаты
       router.push(`/booking/success?id=${data.booking_id}`)
     }
   }
@@ -101,24 +115,35 @@ export function BookingForm({ activity, availableSlots, takenSlots = [] }: Props
             className={styles.input}
             value={date}
             min={today}
-            onChange={e => { setDate(e.target.value); setTime('') }}
+            onChange={e => handleDateChange(e.target.value)}
             required
           />
         </div>
 
-        {/* Время — только если есть расписание */}
-        {slots && slots.length > 0 && (
+        {/* Время */}
+        {date && (
           <div className={styles.field}>
             <label className={styles.label}>Время</label>
-            <div className={styles.timeGrid}>
-              {slots.map(s => (
-                <button
-                  key={s} type="button"
-                  className={`${styles.timeSlot} ${time === s ? styles.timeSlotActive : ''}`}
-                  onClick={() => setTime(s)}
-                >{s}</button>
-              ))}
-            </div>
+            {slotsLoading && <div className={styles.slotsLoading}>Проверяем доступность...</div>}
+            {!slotsLoading && freeSlots !== null && freeSlots.length === 0 && (
+              <div className={styles.noSlots}>На эту дату все часы заняты. Выберите другую дату.</div>
+            )}
+            {!slotsLoading && freeSlots && freeSlots.length > 0 && (
+              <div className={styles.timeGrid}>
+                {freeSlots.map(s => (
+                  <button
+                    key={s} type="button"
+                    className={`${styles.timeSlot} ${time === s ? styles.timeSlotActive : ''}`}
+                    onClick={() => setTime(prev => prev === s ? '' : s)}
+                  >{s}</button>
+                ))}
+              </div>
+            )}
+            {!slotsLoading && freeSlots === null && (
+              <div className={styles.timeGrid}>
+                <span className={styles.slotsHint}>Время можно уточнить у организатора</span>
+              </div>
+            )}
           </div>
         )}
 
@@ -134,7 +159,6 @@ export function BookingForm({ activity, availableSlots, takenSlots = [] }: Props
 
         <div className={styles.divider} />
 
-        {/* Контакты */}
         <div className={styles.field}>
           <label className={styles.label}>Ваше имя</label>
           <input type="text" className={styles.input} placeholder="Иван Иванов"
