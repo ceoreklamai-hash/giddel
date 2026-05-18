@@ -3,7 +3,6 @@ import type { Metadata } from 'next'
 import './globals.css'
 import 'leaflet/dist/leaflet.css'
 import { Footer } from '@/components/footer/Footer'
-import { AssistantWidget } from '@/components/assistant/AssistantWidget'
 
 export const metadata: Metadata = {
   title: 'Giddel — Отдых в Краснодарском крае',
@@ -17,7 +16,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {children}
         <Footer />
-        <AssistantWidget />
       </body>
     </html>
   )
