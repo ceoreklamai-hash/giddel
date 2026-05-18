@@ -1,77 +1,86 @@
 'use client'
 // src/app/auth/login/TouristLogin.tsx
-// Email → magic link (кликнуть ссылку в письме)
-// Телефон → SMS OTP (ввести 6-значный код)
 import { useState } from 'react'
 import { createBrowserClient } from '@supabase/auth-helpers-nextjs'
 import { Nav } from '@/components/nav/Nav'
-import { Mail, Phone, ArrowRight, CheckCircle, MailOpen } from 'lucide-react'
+import { Mail, Eye, EyeOff, ArrowRight, CheckCircle } from 'lucide-react'
 import styles from './TouristLogin.module.css'
 
-type Method = 'email' | 'phone'
+type Mode = 'login' | 'register'
 
 export function TouristLogin() {
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
-  const [method, setMethod] = useState<Method>('email')
-  const [value, setValue] = useState('')
-  const [otp, setOtp] = useState('')
-  const [step, setStep] = useState<'input' | 'link_sent' | 'otp' | 'done'>('input')
+
+  const [mode, setMode] = useState<Mode>('login')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [done, setDone] = useState(false)
+  const [resetSent, setResetSent] = useState(false)
 
-  function formatPhone(raw: string) {
-    const digits = raw.replace(/\D/g, '')
-    if (digits.startsWith('8') && digits.length === 11) return '+7' + digits.slice(1)
-    if (digits.startsWith('7') && digits.length === 11) return '+' + digits
-    return raw
-  }
+  function clearError() { setError('') }
 
-  async function sendCode() {
+  async function handleSubmit() {
+    if (!email.trim() || !password) return
     setLoading(true)
     setError('')
 
-    if (method === 'email') {
-      // Логин через серверный роут — без отправки письма
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: value.trim() }),
+    if (mode === 'login') {
+      const { error: err } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
       })
-      const data = await res.json()
-      if (!data.ok) { setError(data.error ?? 'Ошибка входа'); setLoading(false); return }
-
-      await supabase.auth.setSession({
-        access_token: data.access_token,
-        refresh_token: data.refresh_token,
-      })
-      setStep('done')
-      setTimeout(() => { window.location.href = '/profile' }, 800)
+      if (err) {
+        setError(err.message.includes('Invalid login') ? 'Неверный email или пароль' : err.message)
+        setLoading(false)
+        return
+      }
     } else {
-      const phone = formatPhone(value)
-      const { error: err } = await supabase.auth.signInWithOtp({ phone })
-      if (err) { setError(err.message); setLoading(false); return }
-      setStep('otp')
+      if (password.length < 6) {
+        setError('Пароль должен быть не менее 6 символов')
+        setLoading(false)
+        return
+      }
+      const { error: err } = await supabase.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password,
+        options: { emailRedirectTo: `${window.location.origin}/profile` },
+      })
+      if (err) {
+        setError(err.message)
+        setLoading(false)
+        return
+      }
     }
+
+    setDone(true)
+    setTimeout(() => { window.location.href = '/profile' }, 800)
     setLoading(false)
   }
 
-  async function verifyOtp() {
-    setLoading(true)
-    setError('')
-    const { error: err } = await supabase.auth.verifyOtp({
-      phone: formatPhone(value), token: otp, type: 'sms'
+  async function handleVK() {
+    await supabase.auth.signInWithOAuth({
+      provider: 'vk',
+      options: { redirectTo: `${window.location.origin}/profile` },
     })
-    if (err) { setError('Неверный код. Проверьте и попробуйте снова.'); setLoading(false); return }
-    setStep('done')
-    setTimeout(() => { window.location.href = '/profile' }, 1200)
+  }
+
+  async function sendReset() {
+    if (!email.trim()) { setError('Введите email чтобы сбросить пароль'); return }
+    setLoading(true)
+    await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+      redirectTo: `${window.location.origin}/auth/reset`,
+    })
+    setResetSent(true)
     setLoading(false)
   }
 
-  // Вход успешен
-  if (step === 'done') {
+  if (done) {
     return (
       <div className={styles.page}>
         <Nav />
@@ -84,138 +93,114 @@ export function TouristLogin() {
     )
   }
 
-  // Email — ссылка отправлена
-  if (step === 'link_sent') {
-    return (
-      <div className={styles.page}>
-        <Nav />
-        <div className={styles.center}>
-          <div className={styles.card}>
-            <div style={{ textAlign: 'center', marginBottom: 20 }}>
-              <MailOpen size={48} strokeWidth={1.2} color="var(--color-accent)" />
-            </div>
-            <h2 className={styles.title}>Проверьте почту</h2>
-            <p className={styles.sub}>
-              Отправили письмо на <strong style={{ color: '#fff' }}>{value}</strong>.
-              Нажмите на ссылку в письме — и вы автоматически войдёте в личный кабинет.
-            </p>
-            <p className={styles.hint} style={{ marginTop: 16 }}>
-              Письмо может прийти в течение 1–2 минут. Проверьте папку «Спам», если не нашли.
-            </p>
-            <button
-              className={styles.back}
-              style={{ marginTop: 24 }}
-              onClick={() => { setStep('input'); setError('') }}
-            >
-              ← Изменить email
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className={styles.page}>
       <Nav />
       <div className={styles.center}>
         <div className={styles.card}>
-          <h1 className={styles.title}>Вход или регистрация</h1>
-          <p className={styles.sub}>Аккаунт создаётся автоматически при первом входе</p>
 
-          {step === 'input' && (
-            <>
-              <div className={styles.methodTabs}>
-                <button
-                  className={`${styles.methodTab} ${method === 'email' ? styles.methodTabActive : ''}`}
-                  onClick={() => { setMethod('email'); setValue(''); setError('') }}
-                >
-                  <Mail size={15} /> Email
-                </button>
-                <button
-                  className={`${styles.methodTab} ${method === 'phone' ? styles.methodTabActive : ''}`}
-                  onClick={() => { setMethod('phone'); setValue(''); setError('') }}
-                >
-                  <Phone size={15} /> Телефон
-                </button>
-              </div>
+          {/* Переключатель Войти / Зарегистрироваться */}
+          <div className={styles.modeTabs}>
+            <button
+              className={`${styles.modeTab} ${mode === 'login' ? styles.modeTabActive : ''}`}
+              onClick={() => { setMode('login'); clearError() }}
+            >
+              Войти
+            </button>
+            <button
+              className={`${styles.modeTab} ${mode === 'register' ? styles.modeTabActive : ''}`}
+              onClick={() => { setMode('register'); clearError() }}
+            >
+              Регистрация
+            </button>
+          </div>
 
-              <div className={styles.field}>
-                <label className={styles.label}>
-                  {method === 'email' ? 'Email-адрес' : 'Номер телефона'}
-                </label>
-                <input
-                  className={styles.input}
-                  type={method === 'email' ? 'email' : 'tel'}
-                  placeholder={method === 'email' ? 'ivan@mail.ru' : '+7 900 000 00 00'}
-                  value={value}
-                  onChange={e => { setValue(e.target.value); setError('') }}
-                  onKeyDown={e => e.key === 'Enter' && sendCode()}
-                  autoFocus
-                />
-              </div>
+          <p className={styles.sub}>
+            {mode === 'login' ? 'Войдите в личный кабинет' : 'Создайте аккаунт — это займёт минуту'}
+          </p>
 
-              {error && <div className={styles.error}>{error}</div>}
+          {/* VK */}
+          <button className={styles.vkBtn} onClick={handleVK} type="button">
+            <VKIcon />
+            Войти через VK
+          </button>
 
+          <div className={styles.divider}><span>или по email</span></div>
+
+          {/* Email */}
+          <div className={styles.field}>
+            <label className={styles.label}>Email</label>
+            <div className={styles.inputWrap}>
+              <Mail size={15} className={styles.inputIcon} />
+              <input
+                className={styles.input}
+                type="email"
+                placeholder="ivan@mail.ru"
+                value={email}
+                autoComplete="email"
+                onChange={e => { setEmail(e.target.value); clearError() }}
+                onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+                autoFocus
+              />
+            </div>
+          </div>
+
+          {/* Пароль */}
+          <div className={styles.field}>
+            <label className={styles.label}>Пароль</label>
+            <div className={styles.inputWrap}>
+              <input
+                className={styles.input}
+                type={showPass ? 'text' : 'password'}
+                placeholder={mode === 'register' ? 'Минимум 6 символов' : '••••••••'}
+                value={password}
+                autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                onChange={e => { setPassword(e.target.value); clearError() }}
+                onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+              />
               <button
-                className={styles.btn}
-                onClick={sendCode}
-                disabled={loading || !value.trim()}
+                type="button"
+                className={styles.eyeBtn}
+                onClick={() => setShowPass(v => !v)}
+                tabIndex={-1}
               >
-                {loading ? 'Отправляем...' : method === 'email' ? 'Отправить ссылку' : 'Получить код'}
-                {!loading && <ArrowRight size={16} />}
+                {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
+            </div>
+          </div>
 
-              <p className={styles.hint}>
-                {method === 'email'
-                  ? 'Пришлём ссылку для входа на email — без паролей'
-                  : 'Отправим SMS с кодом подтверждения'}
-              </p>
-            </>
+          {error && <div className={styles.error}>{error}</div>}
+
+          {resetSent && (
+            <div className={styles.success}>
+              Письмо со сбросом пароля отправлено на {email}
+            </div>
           )}
 
-          {step === 'otp' && (
-            <>
-              <div className={styles.otpInfo}>
-                SMS с кодом отправлено на {value}:
-              </div>
+          <button
+            className={styles.btn}
+            onClick={handleSubmit}
+            disabled={loading || !email.trim() || !password}
+          >
+            {loading ? 'Подождите...' : mode === 'login' ? 'Войти' : 'Создать аккаунт'}
+            {!loading && <ArrowRight size={16} />}
+          </button>
 
-              <div className={styles.field}>
-                <label className={styles.label}>Код из SMS</label>
-                <input
-                  className={`${styles.input} ${styles.inputOtp}`}
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="000000"
-                  maxLength={6}
-                  value={otp}
-                  onChange={e => { setOtp(e.target.value.replace(/\D/g, '')); setError('') }}
-                  onKeyDown={e => e.key === 'Enter' && verifyOtp()}
-                  autoFocus
-                />
-              </div>
-
-              {error && <div className={styles.error}>{error}</div>}
-
-              <button
-                className={styles.btn}
-                onClick={verifyOtp}
-                disabled={loading || otp.length < 6}
-              >
-                {loading ? 'Проверяем...' : 'Войти'}
-                {!loading && <ArrowRight size={16} />}
-              </button>
-
-              <button
-                className={styles.back}
-                onClick={() => { setStep('input'); setOtp(''); setError('') }}
-              >
-                ← Изменить телефон
-              </button>
-            </>
+          {mode === 'login' && (
+            <button className={styles.forgotBtn} type="button" onClick={sendReset}>
+              Забыли пароль?
+            </button>
           )}
         </div>
       </div>
     </div>
+  )
+}
+
+function VKIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14C20.67 22 22 20.67 22 15.07V8.93C22 3.33 20.67 2 15.07 2zm3.08 13.5h-1.54c-.58 0-.76-.46-1.8-1.52-.9-.89-1.3-.98-1.52-.98-.3 0-.39.08-.39.5v1.38c0 .36-.11.57-1.05.57-1.55 0-3.27-.94-4.48-2.7C5.58 10.81 5 8.88 5 8.49c0-.22.08-.43.5-.43h1.54c.37 0 .51.17.65.57.72 2.08 1.93 3.9 2.42 3.9.19 0 .27-.09.27-.57V9.75c-.06-1.01-.59-1.1-.59-1.46 0-.17.14-.35.37-.35h2.42c.32 0 .43.17.43.54v2.9c0 .32.14.43.23.43.19 0 .35-.11.7-.46 1.08-1.2 1.85-3.06 1.85-3.06.1-.22.27-.43.64-.43h1.54c.46 0 .56.24.46.56-.19.87-2.08 3.56-2.08 3.56-.17.27-.22.39 0 .69.16.22.68.68 1.03 1.1.64.73 1.12 1.34 1.25 1.76.13.41-.08.62-.51.62z"/>
+    </svg>
   )
 }

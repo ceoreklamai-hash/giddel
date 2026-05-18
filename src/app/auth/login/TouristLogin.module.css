@@ -17,61 +17,87 @@
   background: rgba(111,168,163,0.04);
   border: 1px solid rgba(111,168,163,0.15);
   border-radius: 20px;
-  padding: 40px 36px;
+  padding: 36px 32px;
 }
 
-.title {
-  font-family: var(--font-serif);
-  font-size: 26px;
+/* Переключатель Войти / Регистрация */
+.modeTabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(111,168,163,0.1);
+  border-radius: 12px;
+  padding: 3px;
+  margin-bottom: 20px;
+}
+
+.modeTab {
+  flex: 1;
+  font-size: 13px;
   font-weight: 600;
-  color: #fff;
-  margin-bottom: 8px;
+  color: rgba(255,255,255,0.35);
+  padding: 9px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
   text-align: center;
 }
+
+.modeTab:hover { color: rgba(255,255,255,0.6); }
+.modeTabActive { background: rgba(111,168,163,0.15); color: var(--color-accent); }
 
 .sub {
   font-size: 13px;
   color: rgba(255,255,255,0.35);
   text-align: center;
-  margin-bottom: 28px;
-  line-height: 1.5;
+  margin-bottom: 24px;
 }
 
-/* Вкладки email/телефон */
-.methodTabs {
-  display: flex;
-  gap: 4px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(111,168,163,0.1);
-  border-radius: 10px;
-  padding: 3px;
-  margin-bottom: 22px;
-}
-
-.methodTab {
-  flex: 1;
+/* VK кнопка */
+.vkBtn {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(255,255,255,0.4);
-  padding: 9px;
-  border-radius: 8px;
+  gap: 10px;
+  background: #0077FF;
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 13px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: background 0.2s;
+  margin-bottom: 16px;
 }
 
-.methodTab:hover { color: rgba(255,255,255,0.7); }
+.vkBtn:hover { background: #0066dd; }
 
-.methodTabActive {
-  background: rgba(111,168,163,0.15);
-  color: var(--color-accent);
+/* Разделитель */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
-/* Поле */
-.field { margin-bottom: 16px; }
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+}
+
+.divider span {
+  font-size: 11px;
+  color: rgba(255,255,255,0.2);
+  white-space: nowrap;
+}
+
+/* Поля */
+.field { margin-bottom: 14px; }
 
 .label {
   display: block;
@@ -83,6 +109,19 @@
   margin-bottom: 7px;
 }
 
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 13px;
+  color: rgba(255,255,255,0.2);
+  pointer-events: none;
+}
+
 .input {
   width: 100%;
   background: rgba(255,255,255,0.04);
@@ -91,22 +130,56 @@
   color: #fff;
   font-family: var(--font-sans);
   font-size: 15px;
-  padding: 12px 14px;
+  padding: 12px 14px 12px 38px;
   outline: none;
   transition: border-color 0.15s;
+}
+
+/* Поле пароля без иконки слева */
+.inputWrap:has(.eyeBtn) .input {
+  padding-left: 14px;
+  padding-right: 42px;
 }
 
 .input:focus { border-color: rgba(111,168,163,0.45); }
 .input::placeholder { color: rgba(255,255,255,0.2); }
 
-.inputOtp {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: 8px;
-  text-align: center;
+.eyeBtn {
+  position: absolute;
+  right: 12px;
+  color: rgba(255,255,255,0.25);
+  cursor: pointer;
+  transition: color 0.15s;
+  display: flex;
+  align-items: center;
 }
 
-/* Кнопка */
+.eyeBtn:hover { color: rgba(255,255,255,0.55); }
+
+/* Ошибки и успех */
+.error {
+  font-size: 13px;
+  color: #e05555;
+  background: rgba(224,85,85,0.08);
+  border: 1px solid rgba(224,85,85,0.15);
+  border-radius: 8px;
+  padding: 10px 14px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.success {
+  font-size: 13px;
+  color: #6ab04c;
+  background: rgba(106,176,76,0.08);
+  border: 1px solid rgba(106,176,76,0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+/* Главная кнопка */
 .btn {
   width: 100%;
   padding: 13px;
@@ -123,48 +196,23 @@
   justify-content: center;
   gap: 8px;
   margin-bottom: 14px;
+  margin-top: 4px;
 }
 
 .btn:hover:not(:disabled) { background: var(--color-accent-hover); }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.hint {
-  font-size: 12px;
-  color: rgba(255,255,255,0.2);
-  text-align: center;
-  line-height: 1.5;
-}
-
-.error {
-  font-size: 13px;
-  color: #e05555;
-  background: rgba(224,85,85,0.08);
-  border: 1px solid rgba(224,85,85,0.15);
-  border-radius: 8px;
-  padding: 10px 14px;
-  text-align: center;
-  margin-bottom: 14px;
-}
-
-.otpInfo {
-  font-size: 14px;
-  color: rgba(255,255,255,0.45);
-  line-height: 1.6;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.back {
+.forgotBtn {
   display: block;
   width: 100%;
   text-align: center;
-  font-size: 13px;
-  color: rgba(255,255,255,0.3);
+  font-size: 12px;
+  color: rgba(255,255,255,0.25);
   cursor: pointer;
   transition: color 0.15s;
 }
 
-.back:hover { color: rgba(255,255,255,0.6); }
+.forgotBtn:hover { color: rgba(255,255,255,0.5); }
 
 /* Done state */
 .doneTitle {
