@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Nav } from '@/components/nav/Nav'
 import { BookingForm } from '@/components/booking/BookingForm'
+import { GurmanChat } from '@/components/gurman/GurmanChat'
 import { supabase } from '@/lib/supabase'
 import { CATEGORY_LABELS } from '@/lib/types'
 import type { Activity } from '@/lib/types'
@@ -96,6 +97,7 @@ export default async function ActivityDetailPage({ params }: PageProps) {
           </div>
         </div>
       </div>
+      <GurmanChat />
     </>
   )
 }

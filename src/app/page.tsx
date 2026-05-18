@@ -3,6 +3,8 @@ import { Nav } from '@/components/nav/Nav'
 import { Hero } from '@/components/hero/Hero'
 import { CategoryGrid } from '@/components/categories/CategoryGrid'
 import { WineBlock } from '@/components/wine/WineBlock'
+import { GurmanChat } from '@/components/gurman/GurmanChat'
+
 export default function Home() {
   return (
     <>
@@ -12,6 +14,7 @@ export default function Home() {
         <CategoryGrid />
         <WineBlock />
       </main>
+      <GurmanChat />
     </>
   )
 }

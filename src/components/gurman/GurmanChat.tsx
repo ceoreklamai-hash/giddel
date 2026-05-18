@@ -10,7 +10,7 @@ interface Message {
 
 const GREETING: Message = {
   role: 'assistant',
-  content: 'Привет! Я — Гурман, ваш проводник по кухне Краснодарского края. Расскажу, что попробовать, где поесть и какие блюда здесь готовят лучше всего.',
+  content: 'Привет! Я — ваш консьерж по Краснодарскому краю. Помогу выбрать активности, расскажу где поесть, что посмотреть и как лучше провести время на Кубани.',
 }
 
 const SUGGESTIONS = [
@@ -74,10 +74,10 @@ export function GurmanChat() {
         type="button"
         className={styles.fab}
         onClick={() => setOpen(v => !v)}
-        aria-label="Открыть Гурмана"
+        aria-label="Открыть Консьержа"
       >
         <span className={styles.fabIcon}>🍽️</span>
-        {!open && <span className={styles.fabLabel}>Гурман</span>}
+        {!open && <span className={styles.fabLabel}>Консьерж</span>}
       </button>
 
       {open && (
@@ -85,7 +85,7 @@ export function GurmanChat() {
           <div className={styles.header}>
             <div className={styles.avatar}>🍽️</div>
             <div className={styles.headerInfo}>
-              <div className={styles.name}>Гурман</div>
+              <div className={styles.name}>Консьерж</div>
               <div className={styles.status}>
                 <span className={styles.statusDot} />
                 AI-гид по кухне Кубани
@@ -144,7 +144,7 @@ export function GurmanChat() {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKey}
-              placeholder="Спросите Гурмана о еде..."
+              placeholder="Спросите консьержа..."
               rows={1}
               disabled={loading}
             />

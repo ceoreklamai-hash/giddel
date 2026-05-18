@@ -4,7 +4,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Nav } from '@/components/nav/Nav'
 import { SommelierChat } from '@/components/sommelier/SommelierChat'
-import { GurmanChat } from '@/components/gurman/GurmanChat'
 import { supabase } from '@/lib/supabase'
 import styles from './Wines.module.css'
 
@@ -160,7 +159,6 @@ export default async function WinesPage() {
       </div>
 
       <SommelierChat />
-      <GurmanChat />
     </>
   )
 }
