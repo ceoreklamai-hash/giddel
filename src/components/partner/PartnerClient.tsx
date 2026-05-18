@@ -1,6 +1,6 @@
 'use client'
 // src/components/partner/PartnerClient.tsx
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { ChevronLeft, ChevronRight, Plus, Check, X, Clock, Users, CalendarDays, Settings2, BarChart2, TrendingUp, Wallet } from 'lucide-react'
 import styles from './PartnerClient.module.css'
 
@@ -69,6 +69,13 @@ export function PartnerClient({ token, activities, initialBookings }: Props) {
   const [scheduleSaving, setScheduleSaving] = useState(false)
   const [scheduleSaved, setScheduleSaved] = useState(false)
 
+  // Ручная блокировка слотов
+  const [showSlots, setShowSlots] = useState(false)
+  const [slotsActivityId, setSlotsActivityId] = useState(activities[0]?.id ?? '')
+  const [slotData, setSlotData] = useState<{ time: string; status: string; reason: string | null; tourist: string | null }[] | null>(null)
+  const [slotLoading, setSlotLoading] = useState(false)
+  const [togglingSlot, setTogglingSlot] = useState<string | null>(null)
+
   const [form, setForm] = useState({
     activity_id: activities[0]?.id ?? '',
     tourist_name: '', tourist_phone: '',
@@ -131,6 +138,39 @@ export function PartnerClient({ token, activities, initialBookings }: Props) {
 
   function prevMonth() { if (month === 0) { setMonth(11); setYear(y => y - 1) } else setMonth(m => m - 1) }
   function nextMonth() { if (month === 11) { setMonth(0); setYear(y => y + 1) } else setMonth(m => m + 1) }
+
+  const loadSlotData = useCallback(async (date: string, actId: string) => {
+    if (!actId) return
+    setSlotLoading(true)
+    setSlotData(null)
+    try {
+      const res = await fetch(`/api/partner/busy-slots?token=${token}&date=${date}&activity_id=${actId}`)
+      const data = await res.json()
+      setSlotData(data.slots ?? [])
+    } catch {
+      setSlotData([])
+    } finally {
+      setSlotLoading(false)
+    }
+  }, [token])
+
+  useEffect(() => {
+    if (showSlots) loadSlotData(selectedDate, slotsActivityId)
+  }, [showSlots, selectedDate, slotsActivityId, loadSlotData])
+
+  async function toggleSlot(timeSlot: string, currentStatus: string) {
+    const slot = slotData?.find(s => s.time === timeSlot)
+    if (slot?.reason?.startsWith('booking:')) return // нельзя снять реальную бронь
+    setTogglingSlot(timeSlot)
+    const action = currentStatus === 'free' ? 'block' : 'unblock'
+    await fetch(`/api/partner/busy-slots?token=${token}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ activity_id: slotsActivityId, date: selectedDate, time_slot: timeSlot, action }),
+    })
+    await loadSlotData(selectedDate, slotsActivityId)
+    setTogglingSlot(null)
+  }
 
   function selectDay(day: number) {
     const ds = `${year}-${String(month + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`
@@ -368,6 +408,74 @@ export function PartnerClient({ token, activities, initialBookings }: Props) {
                 </button>
               </div>
             )}
+
+            {/* Управление слотами */}
+            <div className={styles.slotsPanel}>
+              <button className={styles.slotsPanelToggle} onClick={() => setShowSlots(v => !v)}>
+                <Clock size={14} />
+                Заблокировать часы
+                <span className={styles.slotsPanelArrow}>{showSlots ? '▲' : '▼'}</span>
+              </button>
+
+              {showSlots && (
+                <div className={styles.slotsPanelBody}>
+                  <div className={styles.slotsRule}>
+                    ⚠ Если час не заблокирован и бронь не подтверждена за 30 мин — комиссия 10% взимается в любом случае
+                  </div>
+
+                  {activities.length > 1 && (
+                    <div className={styles.slotsActRow}>
+                      <span className={styles.slotsActLabel}>Активность:</span>
+                      <select
+                        className={styles.slotsActSelect}
+                        value={slotsActivityId}
+                        onChange={e => setSlotsActivityId(e.target.value)}
+                      >
+                        {activities.map(a => <option key={a.id} value={a.id}>{a.title}</option>)}
+                      </select>
+                    </div>
+                  )}
+
+                  {slotLoading && <div className={styles.slotsLoading}>Загружаем слоты...</div>}
+
+                  {!slotLoading && slotData && (
+                    <div className={styles.slotsGrid}>
+                      {slotData.map(s => {
+                        const isBooking = s.reason?.startsWith('booking:')
+                        const isManual = s.status === 'busy' && !isBooking
+                        const toggling = togglingSlot === s.time
+                        return (
+                          <button
+                            key={s.time}
+                            className={[
+                              styles.slotCell,
+                              s.status === 'free' ? styles.slotFree : '',
+                              isManual ? styles.slotManual : '',
+                              isBooking ? styles.slotBooked : '',
+                              toggling ? styles.slotToggling : '',
+                            ].join(' ')}
+                            onClick={() => !isBooking && !toggling && toggleSlot(s.time, s.status)}
+                            disabled={isBooking || toggling}
+                            title={isBooking ? `Бронь: ${s.tourist ?? ''}` : isManual ? 'Нажмите чтобы разблокировать' : 'Нажмите чтобы заблокировать'}
+                          >
+                            <span className={styles.slotTime}>{s.time}</span>
+                            <span className={styles.slotLabel}>
+                              {isBooking ? s.tourist ?? 'Бронь' : isManual ? 'Занято' : 'Свободно'}
+                            </span>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
+
+                  <div className={styles.slotsLegend}>
+                    <span className={styles.slotsLegItem}><span className={styles.slotsLegDot} style={{background:'rgba(106,176,76,0.3)',border:'1px solid #6ab04c'}} />Свободно</span>
+                    <span className={styles.slotsLegItem}><span className={styles.slotsLegDot} style={{background:'rgba(232,168,92,0.3)',border:'1px solid #e8a85c'}} />Заблокировано</span>
+                    <span className={styles.slotsLegItem}><span className={styles.slotsLegDot} style={{background:'rgba(200,80,80,0.3)',border:'1px solid #e05555'}} />Бронь</span>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Временная шкала */}
             <div className={styles.timeline}>

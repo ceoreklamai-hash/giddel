@@ -663,6 +663,184 @@
   text-transform: none;
 }
 
+/* ─── Панель блокировки слотов ───────────────────────── */
+.slotsPanel {
+  border: 1px solid rgba(111,168,163,0.15);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.slotsPanelToggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  background: rgba(111,168,163,0.04);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+
+.slotsPanelToggle:hover {
+  color: rgba(255,255,255,0.8);
+  background: rgba(111,168,163,0.08);
+}
+
+.slotsPanelArrow {
+  margin-left: auto;
+  font-size: 10px;
+  color: rgba(255,255,255,0.25);
+}
+
+.slotsPanelBody {
+  padding: 16px;
+  border-top: 1px solid rgba(111,168,163,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.slotsRule {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #e8a85c;
+  background: rgba(232,168,92,0.06);
+  border: 1px solid rgba(232,168,92,0.18);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.slotsActRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.slotsActLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.slotsActSelect {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(111,168,163,0.18);
+  border-radius: 8px;
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  padding: 6px 10px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  flex: 1;
+}
+.slotsActSelect option { background: #0c1515; }
+
+.slotsLoading {
+  font-size: 12px;
+  color: rgba(255,255,255,0.25);
+  padding: 12px 0;
+  text-align: center;
+}
+
+.slotsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 6px;
+}
+
+.slotCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 9px 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+}
+
+.slotFree {
+  background: rgba(106,176,76,0.08);
+  border-color: rgba(106,176,76,0.25);
+}
+.slotFree:hover:not(:disabled) {
+  background: rgba(106,176,76,0.15);
+  border-color: rgba(106,176,76,0.5);
+}
+
+.slotManual {
+  background: rgba(232,168,92,0.1);
+  border-color: rgba(232,168,92,0.35);
+}
+.slotManual:hover:not(:disabled) {
+  background: rgba(232,168,92,0.18);
+  border-color: rgba(232,168,92,0.6);
+}
+
+.slotBooked {
+  background: rgba(200,80,80,0.08);
+  border-color: rgba(200,80,80,0.25);
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.slotToggling {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.slotTime {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.slotFree .slotTime { color: #6ab04c; }
+.slotManual .slotTime { color: #e8a85c; }
+.slotBooked .slotTime { color: #e05555; }
+
+.slotLabel {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.slotFree .slotLabel { color: rgba(106,176,76,0.7); }
+.slotManual .slotLabel { color: rgba(232,168,92,0.7); }
+.slotBooked .slotLabel { color: rgba(200,80,80,0.7); }
+
+.slotsLegend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.slotsLegItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+}
+
+.slotsLegDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
 /* ─── Расписание ─────────────────────────────────────── */
 .scheduleWrap {
   max-width: 560px;
