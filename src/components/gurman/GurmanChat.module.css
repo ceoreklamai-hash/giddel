@@ -3,7 +3,7 @@
 .fab {
   position: fixed;
   bottom: 32px;
-  left: 32px;
+  right: 32px;
   z-index: 200;
   display: flex;
   align-items: center;
@@ -36,7 +36,7 @@
 .panel {
   position: fixed;
   bottom: 96px;
-  left: 32px;
+  right: 32px;
   z-index: 200;
   width: 380px;
   max-height: 520px;
@@ -277,7 +277,7 @@
     bottom: 88px;
   }
   .fab {
-    left: 16px;
+    right: 16px;
     bottom: 24px;
   }
 }
