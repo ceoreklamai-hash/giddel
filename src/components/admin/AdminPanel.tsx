@@ -1,7 +1,7 @@
 'use client'
 // src/components/admin/AdminPanel.tsx
 import { useState } from 'react'
-import { Plus, Copy, Check, ExternalLink, Power } from 'lucide-react'
+import { Plus, Copy, Check, ExternalLink, Power, CheckCircle, XCircle, MessageCircle } from 'lucide-react'
 import { CATEGORY_LABELS } from '@/lib/types'
 import type { Category } from '@/lib/types'
 import styles from './AdminPanel.module.css'
@@ -12,6 +12,15 @@ interface Partner {
 interface Activity {
   id: string; title: string; category: string; price_from: number; is_active: boolean; partner_id: string | null; location_name: string | null
 }
+interface PartnerRequest {
+  id: string; status: string; created_at: string;
+  partner_name: string; phone: string | null; city: string | null;
+  telegram_username: string | null; telegram_chat_id: string;
+  activity_name: string; category: string | null;
+  description: string | null; price_from: number | null; duration_hours: number | null;
+  photo_urls: string[] | null; admin_notes: string | null;
+}
+
 interface Booking {
   id: string; status: string; total_price: number; commission_amount: number; created_at: string; source: string | null;
   tourist_name: string | null; tourist_phone: string | null; tourist_email: string | null;
@@ -29,13 +38,15 @@ const STATUS_COLOR: Record<string, string> = {
 const PARTNER_DEFAULT = { name: '', phone: '', email: '', commission_pct: 10 }
 const ACTIVITY_DEFAULT = { title: '', category: 'quad', price_from: 0, duration_hours: 2, location_name: '', description: '', partner_id: '' }
 
-export function AdminPanel({ initialPartners, initialActivities, initialBookings }: {
-  initialPartners: Partner[], initialActivities: Activity[], initialBookings: Booking[]
+export function AdminPanel({ initialPartners, initialActivities, initialBookings, initialRequests }: {
+  initialPartners: Partner[], initialActivities: Activity[], initialBookings: Booking[], initialRequests: PartnerRequest[]
 }) {
-  const [tab, setTab] = useState<'partners' | 'activities' | 'bookings'>('bookings')
+  const [tab, setTab] = useState<'partners' | 'activities' | 'bookings' | 'requests'>('bookings')
   const [partners, setPartners] = useState(initialPartners)
   const [activities, setActivities] = useState(initialActivities)
   const [bookings] = useState(initialBookings)
+  const [requests, setRequests] = useState<PartnerRequest[]>(initialRequests)
+  const [requestAction, setRequestAction] = useState<Record<string, string>>({})
   const [showPartnerForm, setShowPartnerForm] = useState(false)
   const [showActivityForm, setShowActivityForm] = useState(false)
   const [partnerForm, setPartnerForm] = useState(PARTNER_DEFAULT)
@@ -85,6 +96,17 @@ export function AdminPanel({ initialPartners, initialActivities, initialBookings
     setSaving(false)
   }
 
+  async function handleRequest(id: string, status: 'approved' | 'rejected', notes?: string) {
+    setRequestAction(prev => ({ ...prev, [id]: status }))
+    await fetch('/api/admin/partner-requests', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status, admin_notes: notes ?? null, create_partner: status === 'approved' }),
+    })
+    setRequests(prev => prev.map(r => r.id === id ? { ...r, status, admin_notes: notes ?? r.admin_notes } : r))
+    setRequestAction(prev => { const n = {...prev}; delete n[id]; return n })
+  }
+
   async function toggleActivity(id: string, is_active: boolean) {
     await fetch('/api/admin/activity', {
       method: 'PATCH',
@@ -99,7 +121,10 @@ export function AdminPanel({ initialPartners, initialActivities, initialBookings
       {/* Табы */}
       <div className={styles.tabs}>
         <button className={`${styles.tab} ${tab === 'bookings' ? styles.tabActive : ''}`} onClick={() => setTab('bookings')}>
-          Заявки <span className={styles.cnt}>{bookings.length}</span>
+          Брони <span className={styles.cnt}>{bookings.length}</span>
+        </button>
+        <button className={`${styles.tab} ${tab === 'requests' ? styles.tabActive : ''}`} onClick={() => setTab('requests')}>
+          Заявки партнёров {requests.filter(r => r.status === 'pending').length > 0 && <span className={styles.cntAlert}>{requests.filter(r => r.status === 'pending').length}</span>}
         </button>
         <button className={`${styles.tab} ${tab === 'partners' ? styles.tabActive : ''}`} onClick={() => setTab('partners')}>
           Партнёры <span className={styles.cnt}>{partners.length}</span>
@@ -141,6 +166,83 @@ export function AdminPanel({ initialPartners, initialActivities, initialBookings
             ))}
             {bookings.length === 0 && <div className={styles.empty}>Заявок пока нет</div>}
           </div>
+        </div>
+      )}
+
+      {/* ЗАЯВКИ ПАРТНЁРОВ ИЗ БОТА */}
+      {tab === 'requests' && (
+        <div className={styles.section}>
+          <div className={styles.sectionHead}>
+            <span className={styles.sectionTitle}>Заявки на партнёрство</span>
+            <span className={styles.sectionHint}>Из Telegram-бота</span>
+          </div>
+          {requests.length === 0 && <div className={styles.empty}>Заявок пока нет</div>}
+          {requests.map(r => {
+            const isPending = r.status === 'pending'
+            const isProcessing = requestAction[r.id] !== undefined
+            return (
+              <div key={r.id} className={`${styles.reqCard} ${!isPending ? styles.reqCardDone : ''}`}>
+                <div className={styles.reqHeader}>
+                  <div className={styles.reqName}>{r.partner_name}</div>
+                  <div className={styles.reqStatus} style={{ color: r.status === 'approved' ? '#6ab04c' : r.status === 'rejected' ? '#e85c5c' : '#e8a85c' }}>
+                    {r.status === 'approved' ? '✅ Одобрено' : r.status === 'rejected' ? '❌ Отклонено' : '⏳ На рассмотрении'}
+                  </div>
+                  <div className={styles.reqDate}>{new Date(r.created_at).toLocaleDateString('ru-RU')}</div>
+                </div>
+
+                <div className={styles.reqGrid}>
+                  <div><span className={styles.reqLabel}>Телефон</span> {r.phone ?? '—'}</div>
+                  <div><span className={styles.reqLabel}>Город</span> {r.city ?? '—'}</div>
+                  <div><span className={styles.reqLabel}>Telegram</span>
+                    {r.telegram_username
+                      ? <a href={`https://t.me/${r.telegram_username}`} target="_blank" className={styles.reqTgLink}>@{r.telegram_username} <MessageCircle size={12}/></a>
+                      : r.telegram_chat_id}
+                  </div>
+                  <div><span className={styles.reqLabel}>Активность</span> {r.activity_name}</div>
+                  <div><span className={styles.reqLabel}>Категория</span> {CATEGORY_LABELS[r.category as Category] ?? r.category ?? '—'}</div>
+                  <div><span className={styles.reqLabel}>Цена от</span> {r.price_from ? `${r.price_from.toLocaleString('ru-RU')} ₽` : '—'}</div>
+                  <div><span className={styles.reqLabel}>Длительность</span> {r.duration_hours ? `${r.duration_hours} ч` : '—'}</div>
+                </div>
+
+                {r.description && (
+                  <div className={styles.reqDesc}>{r.description}</div>
+                )}
+
+                {r.photo_urls && r.photo_urls.length > 0 && (
+                  <div className={styles.reqPhotos}>
+                    {r.photo_urls.map((url, i) => (
+                      <a key={i} href={url} target="_blank">
+                        <img src={url} alt={`фото ${i+1}`} className={styles.reqPhoto} />
+                      </a>
+                    ))}
+                  </div>
+                )}
+
+                {isPending && (
+                  <div className={styles.reqActions}>
+                    <button
+                      className={styles.approveBtn}
+                      onClick={() => handleRequest(r.id, 'approved')}
+                      disabled={isProcessing}
+                    >
+                      <CheckCircle size={14} /> {isProcessing && requestAction[r.id] === 'approved' ? 'Одобряем...' : 'Одобрить и создать'}
+                    </button>
+                    <button
+                      className={styles.rejectBtn}
+                      onClick={() => handleRequest(r.id, 'rejected')}
+                      disabled={isProcessing}
+                    >
+                      <XCircle size={14} /> {isProcessing && requestAction[r.id] === 'rejected' ? 'Отклоняем...' : 'Отклонить'}
+                    </button>
+                  </div>
+                )}
+
+                {r.admin_notes && (
+                  <div className={styles.reqNotes}>📝 {r.admin_notes}</div>
+                )}
+              </div>
+            )
+          })}
         </div>
       )}
 

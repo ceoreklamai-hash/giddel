@@ -153,6 +153,51 @@
 .bookingStatus { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
 .bookingDate { font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 2px; }
 
+.cntAlert { font-size: 10px; font-weight: 700; background: #e85c5c; color: #fff; padding: 1px 6px; border-radius: 20px; }
+.sectionHint { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+/* Заявки партнёров */
+.reqCard {
+  background: rgba(111,168,163,0.04); border: 1px solid rgba(111,168,163,0.12);
+  border-radius: 10px; padding: 18px; margin-bottom: 12px;
+}
+.reqCardDone { opacity: 0.55; }
+.reqHeader { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.reqName { font-size: 15px; font-weight: 700; color: #fff; flex: 1; }
+.reqStatus { font-size: 12px; font-weight: 600; }
+.reqDate { font-size: 11px; color: rgba(255,255,255,0.3); }
+
+.reqGrid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px 16px; font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 12px;
+}
+.reqLabel { color: rgba(255,255,255,0.3); margin-right: 4px; }
+.reqTgLink { color: var(--color-accent); display: inline-flex; align-items: center; gap: 3px; text-decoration: none; }
+.reqDesc { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.6; margin-bottom: 12px; padding: 10px 12px; background: rgba(255,255,255,0.03); border-radius: 6px; }
+
+.reqPhotos { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.reqPhoto { width: 80px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: opacity 0.15s; }
+.reqPhoto:hover { opacity: 0.8; }
+
+.reqActions { display: flex; gap: 10px; }
+.approveBtn {
+  display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600;
+  background: #6ab04c; color: #000; padding: 8px 18px; border-radius: 6px; cursor: pointer;
+  transition: background 0.15s;
+}
+.approveBtn:hover:not(:disabled) { background: #7bc95a; }
+.approveBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.rejectBtn {
+  display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600;
+  background: rgba(232,92,92,0.12); color: #e85c5c; border: 1px solid rgba(232,92,92,0.3);
+  padding: 8px 18px; border-radius: 6px; cursor: pointer; transition: all 0.15s;
+}
+.rejectBtn:hover:not(:disabled) { background: rgba(232,92,92,0.2); }
+.rejectBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.reqNotes { font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 10px; }
+
 @media (max-width: 768px) {
   .wrap { padding: 20px 16px; }
   .formGrid { grid-template-columns: 1fr; }

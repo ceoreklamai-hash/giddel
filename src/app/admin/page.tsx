@@ -8,15 +8,17 @@ import styles from './Admin.module.css'
 export const metadata: Metadata = { title: 'Админ — Giddel' }
 
 async function getData() {
-  const [{ data: partners }, { data: activities }, { data: bookings }] = await Promise.all([
+  const [{ data: partners }, { data: activities }, { data: bookings }, { data: requests }] = await Promise.all([
     supabase.from('partners').select('id, name, phone, email, portal_token, rating').order('created_at', { ascending: false }),
     supabase.from('activities').select('id, title, category, price_from, is_active, partner_id, location_name').order('created_at', { ascending: false }),
     supabase.from('bookings').select('id, status, total_price, commission_amount, created_at, source, tourist_name, tourist_phone, tourist_email, booking_date, guests_count, activity:activities(title, partner_id)').order('created_at', { ascending: false }).limit(100),
+    supabase.from('partner_requests').select('*').order('created_at', { ascending: false }).limit(200),
   ])
   return {
     partners: partners ?? [],
     activities: activities ?? [],
     bookings: bookings ?? [],
+    requests: requests ?? [],
   }
 }
 
@@ -61,6 +63,7 @@ export default async function AdminPage() {
         initialPartners={data.partners as never[]}
         initialActivities={data.activities as never[]}
         initialBookings={data.bookings as never[]}
+        initialRequests={data.requests as never[]}
       />
     </div>
   )
