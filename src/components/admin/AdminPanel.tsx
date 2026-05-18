@@ -12,6 +12,12 @@ interface Partner {
 interface Activity {
   id: string; title: string; category: string; price_from: number; is_active: boolean; partner_id: string | null; location_name: string | null
 }
+interface Client {
+  name: string; phone: string; email: string
+  bookings_count: number; total_spent: number
+  categories: string[]; last_booking: string
+}
+
 interface PartnerRequest {
   id: string; status: string; created_at: string;
   partner_name: string; phone: string | null; city: string | null;
@@ -38,15 +44,18 @@ const STATUS_COLOR: Record<string, string> = {
 const PARTNER_DEFAULT = { name: '', phone: '', email: '', commission_pct: 10 }
 const ACTIVITY_DEFAULT = { title: '', category: 'quad', price_from: 0, duration_hours: 2, location_name: '', description: '', partner_id: '' }
 
-export function AdminPanel({ initialPartners, initialActivities, initialBookings, initialRequests }: {
-  initialPartners: Partner[], initialActivities: Activity[], initialBookings: Booking[], initialRequests: PartnerRequest[]
+export function AdminPanel({ initialPartners, initialActivities, initialBookings, initialRequests, initialClients }: {
+  initialPartners: Partner[], initialActivities: Activity[], initialBookings: Booking[], initialRequests: PartnerRequest[], initialClients: Client[]
 }) {
-  const [tab, setTab] = useState<'partners' | 'activities' | 'bookings' | 'requests'>('bookings')
+  const [tab, setTab] = useState<'partners' | 'activities' | 'bookings' | 'requests' | 'clients'>('bookings')
   const [partners, setPartners] = useState(initialPartners)
   const [activities, setActivities] = useState(initialActivities)
   const [bookings, setBookings] = useState(initialBookings)
   const [bookingAction, setBookingAction] = useState<Record<string, boolean>>({})
   const [requests, setRequests] = useState<PartnerRequest[]>(initialRequests)
+  const [clients] = useState<Client[]>(initialClients)
+  const [clientSearch, setClientSearch] = useState('')
+  const [clientCategory, setClientCategory] = useState('')
   const [requestAction, setRequestAction] = useState<Record<string, string>>({})
   const [showPartnerForm, setShowPartnerForm] = useState(false)
   const [showActivityForm, setShowActivityForm] = useState(false)
@@ -135,6 +144,9 @@ export function AdminPanel({ initialPartners, initialActivities, initialBookings
         <button className={`${styles.tab} ${tab === 'bookings' ? styles.tabActive : ''}`} onClick={() => setTab('bookings')}>
           Брони <span className={styles.cnt}>{bookings.length}</span>
         </button>
+        <button className={`${styles.tab} ${tab === 'clients' ? styles.tabActive : ''}`} onClick={() => setTab('clients')}>
+          Клиенты <span className={styles.cnt}>{clients.length}</span>
+        </button>
         <button className={`${styles.tab} ${tab === 'requests' ? styles.tabActive : ''}`} onClick={() => setTab('requests')}>
           Заявки партнёров {requests.filter(r => r.status === 'pending').length > 0 && <span className={styles.cntAlert}>{requests.filter(r => r.status === 'pending').length}</span>}
         </button>
@@ -200,6 +212,75 @@ export function AdminPanel({ initialPartners, initialActivities, initialBookings
           </div>
         </div>
       )}
+
+      {/* КЛИЕНТЫ */}
+      {tab === 'clients' && (() => {
+        const allCats = Array.from(new Set(clients.flatMap(c => c.categories))).sort()
+        const filtered = clients.filter(c => {
+          const q = clientSearch.toLowerCase()
+          const matchSearch = !q || c.name.toLowerCase().includes(q) || c.phone.includes(q) || c.email.toLowerCase().includes(q)
+          const matchCat = !clientCategory || c.categories.includes(clientCategory)
+          return matchSearch && matchCat
+        })
+        return (
+          <div className={styles.section}>
+            <div className={styles.sectionHead}>
+              <span className={styles.sectionTitle}>База клиентов</span>
+              <span className={styles.sectionHint}>{filtered.length} из {clients.length}</span>
+            </div>
+
+            <div className={styles.clientFilters}>
+              <input
+                className={styles.clientSearch}
+                placeholder="Поиск по имени, телефону, email..."
+                value={clientSearch}
+                onChange={e => setClientSearch(e.target.value)}
+              />
+              <select
+                className={styles.select}
+                value={clientCategory}
+                onChange={e => setClientCategory(e.target.value)}
+              >
+                <option value="">Все категории</option>
+                {allCats.map(cat => (
+                  <option key={cat} value={cat}>{CATEGORY_LABELS[cat as Category] ?? cat}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.clientTable}>
+              <div className={styles.clientHead}>
+                <span>Клиент</span>
+                <span>Контакты</span>
+                <span>Категории</span>
+                <span>Брони</span>
+                <span>Потрачено</span>
+                <span>Последняя бронь</span>
+              </div>
+              {filtered.map((c, i) => (
+                <div key={i} className={styles.clientRow}>
+                  <div className={styles.clientName}>{c.name}</div>
+                  <div className={styles.clientContacts}>
+                    {c.phone && <a href={`tel:${c.phone}`} className={styles.clientPhone}>{c.phone}</a>}
+                    {c.email && <span className={styles.clientEmail}>{c.email}</span>}
+                  </div>
+                  <div className={styles.clientCats}>
+                    {c.categories.map(cat => (
+                      <span key={cat} className={styles.clientCat}>
+                        {CATEGORY_LABELS[cat as Category] ?? cat}
+                      </span>
+                    ))}
+                  </div>
+                  <div className={styles.clientStat}>{c.bookings_count}</div>
+                  <div className={styles.clientStat} style={{color:'#6fa8a3'}}>{c.total_spent.toLocaleString('ru-RU')} ₽</div>
+                  <div className={styles.clientDate}>{new Date(c.last_booking).toLocaleDateString('ru-RU')}</div>
+                </div>
+              ))}
+              {filtered.length === 0 && <div className={styles.empty}>Клиентов не найдено</div>}
+            </div>
+          </div>
+        )
+      })()}
 
       {/* ЗАЯВКИ ПАРТНЁРОВ ИЗ БОТА */}
       {tab === 'requests' && (

@@ -169,6 +169,47 @@
 .cancelBtnSmall:hover:not(:disabled) { background: rgba(232,92,92,0.2); }
 .cancelBtnSmall:disabled { opacity: 0.4; cursor: not-allowed; }
 
+/* Клиенты */
+.clientFilters { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.clientSearch {
+  flex: 1; min-width: 220px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(111,168,163,0.18);
+  border-radius: 8px; color: #fff; font-family: var(--font-sans); font-size: 13px;
+  padding: 9px 14px; outline: none; transition: border-color 0.15s;
+}
+.clientSearch:focus { border-color: rgba(111,168,163,0.4); }
+.clientSearch::placeholder { color: rgba(255,255,255,0.2); }
+
+.clientTable { width: 100%; overflow-x: auto; }
+.clientHead {
+  display: grid;
+  grid-template-columns: 140px 180px 1fr 60px 110px 110px;
+  gap: 8px; padding: 8px 14px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+  color: rgba(255,255,255,0.25); border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.clientRow {
+  display: grid;
+  grid-template-columns: 140px 180px 1fr 60px 110px 110px;
+  gap: 8px; padding: 12px 14px; align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.1s;
+}
+.clientRow:hover { background: rgba(111,168,163,0.04); }
+.clientName { font-size: 13px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.clientContacts { display: flex; flex-direction: column; gap: 2px; }
+.clientPhone { font-size: 12px; color: var(--color-accent); text-decoration: none; }
+.clientPhone:hover { text-decoration: underline; }
+.clientEmail { font-size: 11px; color: rgba(255,255,255,0.3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.clientCats { display: flex; flex-wrap: wrap; gap: 4px; }
+.clientCat {
+  font-size: 10px; padding: 2px 8px; border-radius: 20px;
+  background: rgba(111,168,163,0.1); color: var(--color-accent);
+  border: 1px solid rgba(111,168,163,0.2); white-space: nowrap;
+}
+.clientStat { font-size: 13px; font-weight: 600; color: #fff; }
+.clientDate { font-size: 11px; color: rgba(255,255,255,0.3); }
+
 .cntAlert { font-size: 10px; font-weight: 700; background: #e85c5c; color: #fff; padding: 1px 6px; border-radius: 20px; }
 .sectionHint { font-size: 12px; color: rgba(255,255,255,0.3); }
 
