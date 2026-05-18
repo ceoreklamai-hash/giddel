@@ -6,6 +6,7 @@ import { AdminLogout } from './AdminLogout'
 import styles from './Admin.module.css'
 
 export const metadata: Metadata = { title: 'Админ — Giddel' }
+export const dynamic = 'force-dynamic'
 
 async function getData() {
   const [{ data: partners }, { data: activities }, { data: bookings }, { data: requests }] = await Promise.all([

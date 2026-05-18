@@ -44,7 +44,8 @@ export function AdminPanel({ initialPartners, initialActivities, initialBookings
   const [tab, setTab] = useState<'partners' | 'activities' | 'bookings' | 'requests'>('bookings')
   const [partners, setPartners] = useState(initialPartners)
   const [activities, setActivities] = useState(initialActivities)
-  const [bookings] = useState(initialBookings)
+  const [bookings, setBookings] = useState(initialBookings)
+  const [bookingAction, setBookingAction] = useState<Record<string, boolean>>({})
   const [requests, setRequests] = useState<PartnerRequest[]>(initialRequests)
   const [requestAction, setRequestAction] = useState<Record<string, string>>({})
   const [showPartnerForm, setShowPartnerForm] = useState(false)
@@ -94,6 +95,17 @@ export function AdminPanel({ initialPartners, initialActivities, initialBookings
       setActivityForm(ACTIVITY_DEFAULT)
     }
     setSaving(false)
+  }
+
+  async function updateBookingStatus(id: string, status: 'confirmed' | 'cancelled') {
+    setBookingAction(prev => ({ ...prev, [id]: true }))
+    await fetch('/api/bookings/status', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status }),
+    })
+    setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b))
+    setBookingAction(prev => { const n = {...prev}; delete n[id]; return n })
   }
 
   async function handleRequest(id: string, status: 'approved' | 'rejected', notes?: string) {
@@ -161,6 +173,26 @@ export function AdminPanel({ initialPartners, initialActivities, initialBookings
                   <div className={styles.bookingDate}>
                     {new Date(b.created_at).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                   </div>
+                  {(b.status === 'pending' || b.status === 'paid') && (
+                    <div className={styles.bookingBtns}>
+                      <button
+                        className={styles.confirmBtn}
+                        onClick={() => updateBookingStatus(b.id, 'confirmed')}
+                        disabled={bookingAction[b.id]}
+                        title="Подтвердить бронь"
+                      >
+                        {bookingAction[b.id] ? '...' : '✓'}
+                      </button>
+                      <button
+                        className={styles.cancelBtnSmall}
+                        onClick={() => updateBookingStatus(b.id, 'cancelled')}
+                        disabled={bookingAction[b.id]}
+                        title="Отменить бронь"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
