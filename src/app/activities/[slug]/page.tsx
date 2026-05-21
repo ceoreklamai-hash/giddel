@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Nav } from '@/components/nav/Nav'
 import { BookingForm } from '@/components/booking/BookingForm'
 import { GurmanChat } from '@/components/gurman/GurmanChat'
+import { ReviewsList } from '@/components/reviews/ReviewsList'
 import { supabase } from '@/lib/supabase'
 import { CATEGORY_LABELS } from '@/lib/types'
 import type { Activity } from '@/lib/types'
@@ -90,6 +91,8 @@ export default async function ActivityDetailPage({ params }: PageProps) {
             {activity.description && (
               <p className={styles.desc}>{activity.description}</p>
             )}
+
+            <ReviewsList activityId={activity.id} />
           </div>
 
           <div className={styles.sideCol}>

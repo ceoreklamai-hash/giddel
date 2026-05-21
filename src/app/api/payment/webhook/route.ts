@@ -4,6 +4,7 @@
 
 import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin'
 import { sendTelegramNotification } from '@/lib/telegram'
+import { sendBookingConfirmation, sendReviewInvitation } from '@/lib/email'
 
 export async function POST(request: Request) {
   const body = await request.json()
@@ -29,6 +30,36 @@ export async function POST(request: Request) {
 
   // Telegram-уведомление партнёру
   await sendTelegramNotification(booking)
+
+  // Email клиенту — подтверждение оплаты
+  if (booking.tourist_email) {
+    await sendBookingConfirmation({
+      to: booking.tourist_email,
+      touristName: booking.tourist_name,
+      activityTitle: (booking.activity as { title: string })?.title ?? '',
+      bookingDate: booking.booking_date,
+      bookingTime: booking.booking_time,
+      guestsCount: booking.guests_count,
+      totalPrice: booking.total_price,
+      bookingId: booking.id,
+    })
+
+    // Приглашение на отзыв — отправляем через день после активности
+    const activityDate = new Date(booking.booking_date)
+    const now = new Date()
+    const msDelay = activityDate.getTime() + 24 * 60 * 60 * 1000 - now.getTime()
+    if (msDelay > 0 && msDelay < 7 * 24 * 60 * 60 * 1000) {
+      // Только если активность в ближайшую неделю — откладываем на следующий день
+      setTimeout(() => {
+        sendReviewInvitation({
+          to: booking.tourist_email!,
+          touristName: booking.tourist_name,
+          activityTitle: (booking.activity as { title: string })?.title ?? '',
+          bookingId: booking.id,
+        })
+      }, msDelay)
+    }
+  }
 
   return Response.json({ ok: true })
 }
