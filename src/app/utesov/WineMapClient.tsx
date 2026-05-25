@@ -25,8 +25,13 @@ function loadYmaps(apiKey: string): Promise<void> {
   })
 }
 
-function markerHtml(emoji: string, size: number) {
-  return `<div style="width:${size}px;height:${size}px;background:#0d0205;border:2px solid #c9a227;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${Math.round(size*0.46)}px;box-shadow:0 0 14px rgba(201,162,39,0.4);cursor:pointer">${emoji}</div>`
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function makeLayout(ymaps: any, emoji: string, size: number) {
+  const half = Math.round(size / 2)
+  const fs = Math.round(size * 0.46)
+  return ymaps.templateLayoutFactory.createClass(
+    `<div style="width:${size}px;height:${size}px;margin-left:-${half}px;margin-top:-${half}px;background:#0d0205;border:2px solid #c9a227;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${fs}px;box-shadow:0 0 14px rgba(201,162,39,0.4);cursor:pointer;transition:transform .2s" onmouseover="this.style.transform='scale(1.25)'" onmouseout="this.style.transform='scale(1)'">${emoji}</div>`
+  )
 }
 
 export function WineMapClient() {
@@ -50,40 +55,32 @@ export function WineMapClient() {
         if (cancelled || !containerRef.current || mapRef.current) return
 
         const map = new ymaps.Map(containerRef.current, {
-          center: [44.9, 37.8],   // [lat, lng] в v2.1
+          center: [44.9, 37.8],
           zoom: 8,
           controls: ['zoomControl'],
-          type: 'yandex#map',
         })
         mapRef.current = map
 
-        // Тёмная тема через стандартный слой
-        map.options.set('preset', 'islands#darkCircleIcon')
-
         // Отель
-        const hotel = new ymaps.Placemark(
+        map.geoObjects.add(new ymaps.Placemark(
           [44.894, 37.323],
           { balloonContent: '<b>Отель Утёсов</b><br>Ваша отправная точка' },
           {
-            iconLayout: 'default#html',
-            iconHtml: markerHtml('🏨', 40),
-            iconOffset: [-20, -20],
+            iconLayout: makeLayout(ymaps, '🏨', 40),
+            iconShape: { type: 'Circle', coordinates: [0, 0], radius: 20 },
           }
-        )
-        map.geoObjects.add(hotel)
+        ))
 
         // Винодельни
         WINERIES.forEach((w, i) => {
-          const pm = new ymaps.Placemark(
+          map.geoObjects.add(new ymaps.Placemark(
             [w.lat, w.lng],
-            { balloonContent: `<b>${i + 1}. ${w.name}</b><br><span style="color:#c9a227">${w.desc}</span>` },
+            { balloonContent: `<b>${i + 1}. ${w.name}</b><br><span style="color:#8b5e0a">${w.desc}</span>` },
             {
-              iconLayout: 'default#html',
-              iconHtml: markerHtml('🍷', 34),
-              iconOffset: [-17, -17],
+              iconLayout: makeLayout(ymaps, '🍷', 34),
+              iconShape: { type: 'Circle', coordinates: [0, 0], radius: 17 },
             }
-          )
-          map.geoObjects.add(pm)
+          ))
         })
       } catch (err) {
         console.error('[WineMap]', err)
