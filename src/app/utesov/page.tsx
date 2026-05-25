@@ -1,16 +1,14 @@
 // src/app/utesov/page.tsx
 import type { Metadata } from 'next'
-import dynamic from 'next/dynamic'
 import { RequestForm } from './RequestForm'
 import { UtesovConcierge } from './UtesovConcierge'
+import { WineMapWrapper } from './WineMapWrapper'
 import styles from './Utesov.module.css'
 
 export const metadata: Metadata = {
   title: 'Винный тур — Отель Утёсов, Анапа',
   description: 'Эксклюзивный винный тур по 8 лучшим винодельням Краснодарского края. Только для гостей отеля Утёсов. Индивидуальная программа.',
 }
-
-const WineMapClient = dynamic(() => import('./WineMapClient').then(m => m.WineMapClient), { ssr: false })
 
 const WINERIES = [
   { n: 1, name: 'Абрау-Дюрсо', region: 'Новороссийск', desc: 'Старейший дом игристых вин России. Подземные тоннели, озеро, легендарное «Русское шампанское» с 1870 года.', emoji: '🥂', color: '#8b6914' },
@@ -123,7 +121,7 @@ export default function UtesovPage() {
             <h2 className={styles.sectionTitle}>Весь маршрут на одной карте</h2>
           </div>
           <div className={styles.mapWrap}>
-            <WineMapClient />
+            <WineMapWrapper />
             <div className={styles.mapLegend}>
               <div className={styles.mapLegendItem}><span className={styles.mapLegendDot} style={{background:'#562a1b'}}>🏨</span> Отель Утёсов</div>
               <div className={styles.mapLegendItem}><span className={styles.mapLegendDot} style={{background:'#1a0508'}}>🍷</span> Виноделня</div>

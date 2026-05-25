@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 
 const WINERIES = [
-  { name: 'Абрау-Дюрсо', lat: 44.864, lng: 37.703, desc: 'Легендарное шампанское с 1870 года' },
+  { name: 'Абрау-Дюрсо', lat: 44.864, lng: 37.703, desc: 'Легендарное игристое с 1870 года' },
   { name: 'Мысхако', lat: 44.685, lng: 37.857, desc: 'Терруарные вина у горы Колдун' },
   { name: 'Шато де Талю', lat: 44.797, lng: 38.097, desc: 'Французский замок в Краснодарском крае' },
   { name: 'Лефкадия', lat: 44.788, lng: 38.917, desc: 'Агрокомплекс в предгорьях Кавказа' },
@@ -13,62 +13,134 @@ const WINERIES = [
   { name: 'Имение Сикоры', lat: 45.182, lng: 37.010, desc: 'Семейная винодельня на Тамани' },
 ]
 
+declare global {
+  interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ymaps3: any
+  }
+}
+
+function makeIcon(emoji: string, size: number, borderColor: string) {
+  const el = document.createElement('div')
+  el.style.cssText = [
+    `width:${size}px`, `height:${size}px`,
+    'background:#0d0205',
+    `border:2px solid ${borderColor}`,
+    'border-radius:50%',
+    'display:flex', 'align-items:center', 'justify-content:center',
+    `font-size:${Math.round(size * 0.5)}px`,
+    'box-shadow:0 0 16px rgba(201,162,39,0.35)',
+    'cursor:pointer',
+    'transition:transform 0.2s',
+  ].join(';')
+  el.textContent = emoji
+  el.addEventListener('mouseenter', () => { el.style.transform = 'scale(1.25)' })
+  el.addEventListener('mouseleave', () => { el.style.transform = 'scale(1)' })
+  return el
+}
+
 export function WineMapClient() {
-  const mapRef = useRef<HTMLDivElement>(null)
-  const mapInstance = useRef<unknown>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const mapRef = useRef<unknown>(null)
+  const apiKey = process.env.NEXT_PUBLIC_YANDEX_MAPS_KEY
 
   useEffect(() => {
-    if (mapInstance.current || !mapRef.current) return
+    if (!containerRef.current || mapRef.current) return
+    if (!apiKey) return
 
-    import('leaflet').then(L => {
-      if (!mapRef.current || mapInstance.current) return
+    // Load Yandex Maps v3 script once
+    const scriptId = 'ymaps3-script'
+    let script = document.getElementById(scriptId) as HTMLScriptElement | null
 
-      const map = L.map(mapRef.current, {
-        center: [44.9, 37.8],
-        zoom: 8,
-        zoomControl: true,
-        scrollWheelZoom: false,
+    const init = async () => {
+      await window.ymaps3.ready
+
+      const { YMap, YMapDefaultSchemeLayer, YMapDefaultFeaturesLayer, YMapMarker, YMapControls, YMapZoomControl } = window.ymaps3
+
+      const map = new YMap(containerRef.current!, {
+        location: { center: [37.8, 44.9], zoom: 8 },
+        theme: 'dark',
       })
+      mapRef.current = map
 
-      mapInstance.current = map
+      map.addChild(new YMapDefaultSchemeLayer({ theme: 'dark' }))
+      map.addChild(new YMapDefaultFeaturesLayer())
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '© OpenStreetMap © CARTO',
-        maxZoom: 18,
-      }).addTo(map)
+      // Controls
+      const controls = new YMapControls({ position: 'right' })
+      controls.addChild(new YMapZoomControl())
+      map.addChild(controls)
 
-      // Утёсов (отель)
-      const hotelIcon = L.divIcon({
-        html: `<div style="width:36px;height:36px;background:#562a1b;border:3px solid #c9a227;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 20px rgba(201,162,39,0.5)">🏨</div>`,
-        className: '',
-        iconAnchor: [18, 18],
-      })
-      L.marker([44.894, 37.323], { icon: hotelIcon })
-        .addTo(map)
-        .bindPopup('<b>Отель Утёсов</b><br>Ваша отправная точка', { className: 'wine-popup' })
+      // Hotel marker
+      const hotelEl = makeIcon('🏨', 40, '#c9a227')
+      const hotelMarker = new YMapMarker(
+        { coordinates: [37.323, 44.894] },
+        hotelEl
+      )
+      hotelEl.title = 'Отель Утёсов — ваша отправная точка'
+      map.addChild(hotelMarker)
 
-      // Винодельни
+      // Winery markers
       WINERIES.forEach((w, i) => {
-        const icon = L.divIcon({
-          html: `<div style="width:32px;height:32px;background:rgba(26,5,8,0.95);border:2px solid #c9a227;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 15px rgba(201,162,39,0.3);cursor:pointer;transition:transform 0.2s" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">🍷</div>`,
-          className: '',
-          iconAnchor: [16, 16],
-        })
-        L.marker([w.lat, w.lng], { icon })
-          .addTo(map)
-          .bindPopup(`<b>${i + 1}. ${w.name}</b><br><span style="color:#c9a227">${w.desc}</span>`)
+        const el = makeIcon('🍷', 34, '#c9a227')
+        el.title = `${i + 1}. ${w.name} — ${w.desc}`
+        const marker = new YMapMarker(
+          { coordinates: [w.lng, w.lat] },
+          el
+        )
+        map.addChild(marker)
       })
-    })
+    }
+
+    if (!script) {
+      script = document.createElement('script')
+      script.id = scriptId
+      script.src = `https://api-maps.yandex.ru/v3/?apikey=${apiKey}&lang=ru_RU`
+      script.onload = init
+      document.head.appendChild(script)
+    } else if (window.ymaps3) {
+      init()
+    } else {
+      script.addEventListener('load', init)
+    }
 
     return () => {
-      if (mapInstance.current) {
-        (mapInstance.current as { remove: () => void }).remove()
-        mapInstance.current = null
+      if (mapRef.current) {
+        (mapRef.current as { destroy?: () => void }).destroy?.()
+        mapRef.current = null
       }
     }
-  }, [])
+  }, [apiKey])
 
-  return (
-    <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
-  )
+  if (!apiKey) {
+    return (
+      <div style={{
+        width: '100%', height: '100%',
+        background: '#0d0205',
+        border: '1px solid rgba(201,162,39,0.15)',
+        borderRadius: '4px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '12px',
+        color: 'rgba(245,230,200,0.4)',
+        fontSize: '14px',
+        textAlign: 'center',
+        padding: '24px',
+      }}>
+        <span style={{ fontSize: '32px' }}>🗺️</span>
+        <div>Карта виноделен Кубани</div>
+        <div style={{ fontSize: '12px', maxWidth: '280px', lineHeight: 1.6 }}>
+          Для отображения карты добавьте<br />
+          <code style={{ color: '#c9a227', background: 'rgba(201,162,39,0.1)', padding: '2px 6px', borderRadius: '3px' }}>
+            NEXT_PUBLIC_YANDEX_MAPS_KEY
+          </code><br />
+          в переменные окружения
+        </div>
+      </div>
+    )
+  }
+
+  return <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
 }
