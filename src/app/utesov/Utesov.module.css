@@ -354,10 +354,17 @@
   opacity: 0.7;
 }
 
-.wineryEmoji {
-  font-size: 28px;
+.wineryIcon {
+  width: 40px;
+  height: 40px;
   margin-bottom: 14px;
   display: block;
+  opacity: 0.85;
+  transition: opacity 0.3s;
+}
+
+.wineryCard:hover .wineryIcon {
+  opacity: 1;
 }
 
 .wineryName {
